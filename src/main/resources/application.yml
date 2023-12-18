@@ -3,8 +3,8 @@ jwt:
   refreshKey: ${JWT_REFRESHKEY}
 
 server:
-  address: ${MYSQL_HOST}
-  port: ${MYSQL_PORT}
+  address: ${SEVER_ADDRESS}
+  port: ${SEVER_PORT}
 
 spring:
   datasource:
