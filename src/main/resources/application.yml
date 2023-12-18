@@ -6,15 +6,17 @@ jwt:
 
 spring:
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${MYSQL_HOST}:${MYSQL_PORT}/${DATA_BASE_NAME}?characterEncoding=UTF-8&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${DATA_BASE_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${MYSQL_USER_NAME}
     password: ${MYSQL_PASSWORD}
 
-    jpa:
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: update
-      properties:
-        hibernate:
-          show_sql: true
-          format_sql: true
+        show_sql: true
+        format_sql: true
