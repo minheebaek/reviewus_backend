@@ -9,7 +9,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql:///${MYSQL_HOST}:${MYSQL_PORT}/${DATA_BASE_NAME}?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${DATA_BASE_NAME}?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
     username: ${MYSQL_USER_NAME}
     password: ${MYSQL_PASSWORD}
 jpa:
@@ -21,4 +21,3 @@ jpa:
     hibernate:
       show_sql: true
       format_sql: true
-
