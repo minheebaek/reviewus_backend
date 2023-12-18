@@ -1,0 +1,24 @@
+jwt:
+  secretKey: ${JWT_SECRETKEY}
+  refreshKey: ${JWT_REFRESHKEY}
+
+server:
+  address: ${MYSQL_HOST}
+  port: ${MYSQL_PORT}
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///${MYSQL_HOST}:${MYSQL_PORT}/${DATA_BASE_NAME}?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&useSSL=true
+    username: ${MYSQL_USER_NAME}
+    password: ${MYSQL_PASSWORD}
+jpa:
+  database: mysql
+  show-sql: true
+  hibernate:
+    ddl-auto: update
+  properties:
+    hibernate:
+      show_sql: true
+      format_sql: true
+
