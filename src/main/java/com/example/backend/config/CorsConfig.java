@@ -15,6 +15,8 @@ public class CorsConfig implements WebMvcConfigurer {
         corsRegistry.addMapping("/**")
                 .allowedMethods("*")
                 .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("https://web-review-us-front-5r422alqcbko0u.sel4.cloudtype.app/")
+                .allowedOrigins("https://review-us-front:80")
                 .allowCredentials(true);
     }
 
