@@ -32,21 +32,22 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final BoardTagMapRepository boardTagMapRepository;
-    private final BoardListViewRepository boardListViewRepository;
 
     @Override
-    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email) {
-        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(Long userId) {
+        List<BoardEntity> BoardEntities = new ArrayList<>();
 
         try {
-            boolean existedUser =userRepository.existsByEmail(email);
-            if(!existedUser) return GetUserBoardListResponseDto.noExistUser();
+            boolean existedUser = userRepository.existsByUserId(userId);
+            if (!existedUser) return GetUserBoardListResponseDto.noExistUser();
 
-            boardListViewEntities = boardListViewRepository.findByWriterEmailOrderByWriteDatetimeDesc(email);
-        } catch (Exception exception){
+            System.out.println(userId + "userId");
+            BoardEntities = boardRepository.findByUserIdOrderByBoardNumberDesc(userId);
+
+        } catch (Exception exception) {
             return ResponseDto.databaseError();
         }
-        return GetUserBoardListResponseDto.success(boardListViewEntities);
+        return GetUserBoardListResponseDto.success(BoardEntities);
     }
 
     @Override

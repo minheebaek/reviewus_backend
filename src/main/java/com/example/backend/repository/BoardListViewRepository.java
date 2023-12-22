@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Integer> {
-    List<BoardListViewEntity> findByWriterEmailOrderByWriteDatetimeDesc(String writerEmail);
+    //List<BoardListViewEntity> findByWriterEmailOrderByWriteDatetimeDesc(String writerEmail);
 
 }
 

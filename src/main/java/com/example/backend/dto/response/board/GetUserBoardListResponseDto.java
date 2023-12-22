@@ -5,6 +5,7 @@ import com.example.backend.common.ResponseCode;
 import com.example.backend.common.ResponseMessage;
 import com.example.backend.dto.object.BoardListItem;
 import com.example.backend.dto.response.ResponseDto;
+import com.example.backend.entity.BoardEntity;
 import com.example.backend.entity.BoardListViewEntity;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -16,14 +17,14 @@ import java.util.List;
 public class GetUserBoardListResponseDto extends ResponseDto {
     private List<BoardListItem> userBoardList;
 
-    private GetUserBoardListResponseDto(List<BoardListViewEntity> boardListViewEntities){
+    private GetUserBoardListResponseDto(List<BoardEntity> BoardEntities){
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.userBoardList = BoardListItem.getList(boardListViewEntities);
+        this.userBoardList = BoardListItem.getList(BoardEntities);
 
     }
 
-    public static ResponseEntity<GetUserBoardListResponseDto> success(List<BoardListViewEntity> boardListViewEntities){
-        GetUserBoardListResponseDto result = new GetUserBoardListResponseDto(boardListViewEntities);
+    public static ResponseEntity<GetUserBoardListResponseDto> success(List<BoardEntity> BoardEntities){
+        GetUserBoardListResponseDto result = new GetUserBoardListResponseDto(BoardEntities);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

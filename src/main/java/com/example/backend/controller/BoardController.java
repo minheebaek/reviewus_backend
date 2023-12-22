@@ -22,11 +22,11 @@ import javax.validation.Valid;
 public class BoardController {
     private final BoardService boardService;
 
-    @GetMapping("/user-board-list/{email}")
+    @GetMapping("")
     public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(
-            @PathVariable("email") String email
+            @IfLogin LoginUserDto loginUserDto
     ){
-        ResponseEntity<? super GetUserBoardListResponseDto> response = boardService.getUserBoardList(email);
+        ResponseEntity<? super GetUserBoardListResponseDto> response = boardService.getUserBoardList(loginUserDto.getUserId());
         return response;
     }
     /**

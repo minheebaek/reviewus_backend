@@ -9,7 +9,7 @@ import com.example.backend.dto.response.board.PostBoardResponseDto;
 import org.springframework.http.ResponseEntity;
 
 public interface BoardService {
-    ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email);
+    ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(Long userId);
     ResponseEntity<?> deleteBoard(Integer boardNumber, Long userId);
     ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardNumber, Long userId);
     ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber,Long userId);

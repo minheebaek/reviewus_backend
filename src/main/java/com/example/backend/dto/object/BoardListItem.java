@@ -1,5 +1,6 @@
 package com.example.backend.dto.object;
 
+import com.example.backend.entity.BoardEntity;
 import com.example.backend.entity.BoardListViewEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,19 +17,21 @@ public class BoardListItem {
     private String title;
     private String content;
     private String writeDatetime;
+    private boolean alarm;
     //private String[] tagList;
 
-    public BoardListItem(BoardListViewEntity boardListViewEntity) {
+    public BoardListItem(BoardEntity boardListViewEntity) {
         this.boardNumber = boardListViewEntity.getBoardNumber();
         this.title = boardListViewEntity.getTitle();
         this.content = boardListViewEntity.getContent();
         this.writeDatetime = boardListViewEntity.getWriteDatetime();
+        this.alarm = boardListViewEntity.isAlarm();
     }
 
-    public static List<BoardListItem> getList(List<BoardListViewEntity> boardListViewEntities){
+    public static List<BoardListItem> getList(List<BoardEntity> BoardEntities){
         List<BoardListItem> list = new ArrayList<>();
-        for(BoardListViewEntity boardListViewEntity : boardListViewEntities){
-            BoardListItem boardListItem = new BoardListItem(boardListViewEntity);
+        for(BoardEntity boardEntity : BoardEntities){
+            BoardListItem boardListItem = new BoardListItem(boardEntity);
             list.add(boardListItem);
         }
         return list;
