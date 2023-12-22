@@ -2,10 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
-import com.example.backend.dto.response.board.GetBoardResponseDto;
-import com.example.backend.dto.response.board.GetUserBoardListResponseDto;
-import com.example.backend.dto.response.board.PatchBoardResponseDto;
-import com.example.backend.dto.response.board.PostBoardResponseDto;
+import com.example.backend.dto.response.board.*;
 import com.example.backend.service.BoardService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;
@@ -22,6 +19,29 @@ import javax.validation.Valid;
 public class BoardController {
     private final BoardService boardService;
 
+    /**
+     * 특정 유저 검색 게시글 불러오기
+     * localhost:8080/mystudy/search-list/{searchWord}
+     *
+     * @parm loginUserDto
+     * @parm searchWord
+     * @return response
+     */
+    @GetMapping("/search-list/{searchWord}")
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
+            @PathVariable("searchWord") String searchWord, @IfLogin LoginUserDto loginUserDto
+    ){
+        ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(loginUserDto.getUserId(),searchWord);
+        return response;
+    }
+
+    /**
+     * 특정 유저 게시글 불러오기
+     * localhost:8080/mystudy
+     *
+     * @parm loginUserDto
+     * @return response
+     */
     @GetMapping("")
     public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(
             @IfLogin LoginUserDto loginUserDto

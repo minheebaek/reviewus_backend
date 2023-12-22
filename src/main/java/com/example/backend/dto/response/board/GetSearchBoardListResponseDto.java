@@ -28,7 +28,7 @@ public class GetSearchBoardListResponseDto extends ResponseDto {
     }
 
     public static ResponseEntity<ResponseDto> noExistUser(){
-        ResponseDto result = new RsponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
-        return ResponseEntity.status(BAD_REQUEST).body(result);
+        ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
     }
 }

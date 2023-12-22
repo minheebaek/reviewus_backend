@@ -31,13 +31,14 @@ public class BoardServiceImplement implements BoardService {
     private final BoardTagMapRepository boardTagMapRepository;
 
     @Override
-    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(Long userId, String searchWord, String preSearchWord) {
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(Long userId, String searchWord) {
         List<BoardEntity> boardEntities = new ArrayList<>();
         try {
             boolean existedUser = userRepository.existsByUserId(userId);
-            if(!existedUser) return GetSearchBoardListResponseDto.noExistUser;
+            if(!existedUser) return GetSearchBoardListResponseDto.noExistUser();
 
-            boardEntities = boardRepository.findByTitleContainsOrContentContainsOrderByBoardNumberDesc(searchWord,searchWord);
+            System.out.println("getSearchBoardList userId "+userId);
+            boardEntities = boardRepository.findAllSearch(userId,searchWord,searchWord);
 
         } catch (Exception exception) {
             exception.printStackTrace();
