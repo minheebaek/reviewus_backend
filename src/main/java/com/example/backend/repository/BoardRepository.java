@@ -12,4 +12,6 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     BoardEntity findByBoardNumber (Integer boardNumber);
 
     List<BoardEntity> findByUserIdOrderByBoardNumberDesc(Long userId);
+
+    List<BoardEntity> findByTitleContainsOrContentContainsOrderByBoardNumberDesc(String title, String content );
 }

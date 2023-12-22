@@ -5,10 +5,7 @@ import com.example.backend.common.ResponseMessage;
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
 import com.example.backend.dto.response.ResponseDto;
-import com.example.backend.dto.response.board.GetBoardResponseDto;
-import com.example.backend.dto.response.board.GetUserBoardListResponseDto;
-import com.example.backend.dto.response.board.PatchBoardResponseDto;
-import com.example.backend.dto.response.board.PostBoardResponseDto;
+import com.example.backend.dto.response.board.*;
 import com.example.backend.entity.BoardEntity;
 import com.example.backend.entity.BoardListViewEntity;
 import com.example.backend.entity.BoardTagMapEntity;
@@ -34,6 +31,22 @@ public class BoardServiceImplement implements BoardService {
     private final BoardTagMapRepository boardTagMapRepository;
 
     @Override
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(Long userId, String searchWord, String preSearchWord) {
+        List<BoardEntity> boardEntities = new ArrayList<>();
+        try {
+            boolean existedUser = userRepository.existsByUserId(userId);
+            if(!existedUser) return GetSearchBoardListResponseDto.noExistUser;
+
+            boardEntities = boardRepository.findByTitleContainsOrContentContainsOrderByBoardNumberDesc(searchWord,searchWord);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetSearchBoardListResponseDto.success(boardEntities);
+    }
+
+    @Override
     public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(Long userId) {
         List<BoardEntity> BoardEntities = new ArrayList<>();
 
@@ -41,10 +54,10 @@ public class BoardServiceImplement implements BoardService {
             boolean existedUser = userRepository.existsByUserId(userId);
             if (!existedUser) return GetUserBoardListResponseDto.noExistUser();
 
-            System.out.println(userId + "userId");
             BoardEntities = boardRepository.findByUserIdOrderByBoardNumberDesc(userId);
 
         } catch (Exception exception) {
+            exception.printStackTrace();
             return ResponseDto.databaseError();
         }
         return GetUserBoardListResponseDto.success(BoardEntities);

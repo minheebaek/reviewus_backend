@@ -20,17 +20,17 @@ public class BoardListItem {
     private boolean alarm;
     //private String[] tagList;
 
-    public BoardListItem(BoardEntity boardListViewEntity) {
-        this.boardNumber = boardListViewEntity.getBoardNumber();
-        this.title = boardListViewEntity.getTitle();
-        this.content = boardListViewEntity.getContent();
-        this.writeDatetime = boardListViewEntity.getWriteDatetime();
-        this.alarm = boardListViewEntity.isAlarm();
+    public BoardListItem(BoardEntity boardEntity) {
+        this.boardNumber = boardEntity.getBoardNumber();
+        this.title = boardEntity.getTitle();
+        this.content = boardEntity.getContent();
+        this.writeDatetime = boardEntity.getWriteDatetime();
+        this.alarm = boardEntity.isAlarm();
     }
 
-    public static List<BoardListItem> getList(List<BoardEntity> BoardEntities){
+    public static List<BoardListItem> getList(List<BoardEntity> boardEntities){
         List<BoardListItem> list = new ArrayList<>();
-        for(BoardEntity boardEntity : BoardEntities){
+        for(BoardEntity boardEntity : boardEntities){
             BoardListItem boardListItem = new BoardListItem(boardEntity);
             list.add(boardListItem);
         }

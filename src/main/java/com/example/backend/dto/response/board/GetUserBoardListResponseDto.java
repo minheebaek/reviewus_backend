@@ -6,7 +6,6 @@ import com.example.backend.common.ResponseMessage;
 import com.example.backend.dto.object.BoardListItem;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.entity.BoardEntity;
-import com.example.backend.entity.BoardListViewEntity;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
