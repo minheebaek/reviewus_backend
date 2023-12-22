@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
 import com.example.backend.dto.response.board.GetBoardResponseDto;
+import com.example.backend.dto.response.board.GetUserBoardListResponseDto;
 import com.example.backend.dto.response.board.PatchBoardResponseDto;
 import com.example.backend.dto.response.board.PostBoardResponseDto;
 import com.example.backend.service.BoardService;
@@ -20,6 +21,14 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+
+    @GetMapping("/user-board-list/{email}")
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(
+            @PathVariable("email") String email
+    ){
+        ResponseEntity<? super GetUserBoardListResponseDto> response = boardService.getUserBoardList(email);
+        return response;
+    }
     /**
      * 게시글 삭제
      * localhost:8080/mystudy/{boardNumber}

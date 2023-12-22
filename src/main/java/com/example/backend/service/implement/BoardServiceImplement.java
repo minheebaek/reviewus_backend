@@ -6,15 +6,14 @@ import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.board.GetBoardResponseDto;
+import com.example.backend.dto.response.board.GetUserBoardListResponseDto;
 import com.example.backend.dto.response.board.PatchBoardResponseDto;
 import com.example.backend.dto.response.board.PostBoardResponseDto;
 import com.example.backend.entity.BoardEntity;
+import com.example.backend.entity.BoardListViewEntity;
 import com.example.backend.entity.BoardTagMapEntity;
 import com.example.backend.entity.TagEntity;
-import com.example.backend.repository.BoardRepository;
-import com.example.backend.repository.BoardTagMapRepository;
-import com.example.backend.repository.TagRepository;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.repository.*;
 import com.example.backend.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +32,22 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final BoardTagMapRepository boardTagMapRepository;
+    private final BoardListViewRepository boardListViewRepository;
+
+    @Override
+    public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email) {
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+            boolean existedUser =userRepository.existsByEmail(email);
+            if(!existedUser) return GetUserBoardListResponseDto.noExistUser();
+
+            boardListViewEntities = boardListViewRepository.findByWriterEmailOrderByWriteDatetimeDesc(email);
+        } catch (Exception exception){
+            return ResponseDto.databaseError();
+        }
+        return GetUserBoardListResponseDto.success(boardListViewEntities);
+    }
 
     @Override
     public ResponseEntity<?> deleteBoard(Integer boardNumber, Long userId) {

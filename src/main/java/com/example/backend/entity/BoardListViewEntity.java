@@ -19,8 +19,8 @@ public class BoardListViewEntity {
     private int boardNumber;
     private String title;
     private String content;
-    private String titleImage;
     private String writeDatetime;
+    private boolean alarm;
 
 }
 
