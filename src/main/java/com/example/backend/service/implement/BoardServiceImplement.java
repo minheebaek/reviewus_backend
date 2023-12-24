@@ -118,13 +118,17 @@ public class BoardServiceImplement implements BoardService {
             if (!boardEntity.getUserId().equals(userId)) return PatchBoardResponseDto.notpermission();
             boardEntity.updateBoard(dto);
             boardRepository.save(boardEntity);
+
             boardTagMapEntities = boardTagMapRepository.findByBoardEntity(boardEntity);
             for (BoardTagMapEntity boardTagMapEntity : boardTagMapEntities) {
-
-                boardTagMapEntity.setBoardEntity(null);
-                boardTagMapEntity.setTagEntity(null);
-
+                boardTagMapRepository.delete(boardTagMapEntity);
             }
+
+            tagEntities = tagRepository.findByBoardNumber(boardNumber);
+            for (TagEntity tagEntity : tagEntities) {
+                tagRepository.delete(tagEntity);
+            }
+
             List<String> tagList = dto.getTagList();
             for (String tag : tagList) {
 
