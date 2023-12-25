@@ -31,7 +31,8 @@ public class BoardController {
     public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
             @PathVariable("searchWord") String searchWord, @IfLogin LoginUserDto loginUserDto
     ){
-        ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(loginUserDto.getUserId(),searchWord);
+        System.out.println("/search-list/{searchWord}"+loginUserDto.getUserId()+"searchWord"+searchWord);
+        ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(searchWord,loginUserDto.getUserId());
         return response;
     }
 

@@ -31,9 +31,10 @@ public class BoardServiceImplement implements BoardService {
     private final BoardTagMapRepository boardTagMapRepository;
 
     @Override
-    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(Long userId, String searchWord) {
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord,Long userId) {
         List<BoardEntity> boardEntities = new ArrayList<>();
         try {
+            System.out.println("existsByUserId userId "+userId);
             boolean existedUser = userRepository.existsByUserId(userId);
             if(!existedUser) return GetSearchBoardListResponseDto.noExistUser();
 
