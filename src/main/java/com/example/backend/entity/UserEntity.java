@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "user")
@@ -34,6 +36,12 @@ public class UserEntity {
         this.password = dto.getPassword();
         this.nickname = dto.getNickname();
     }
+
+    public void setUserInfo(String nickname, String password){
+        this.nickname=nickname;
+        this.password=password;
+    }
+
     @Override
     public String toString() {
         return "User{" +
