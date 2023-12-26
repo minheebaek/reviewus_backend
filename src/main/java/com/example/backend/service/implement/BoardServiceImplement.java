@@ -36,7 +36,7 @@ public class BoardServiceImplement implements BoardService {
         try {
             System.out.println("existsByUserId userId "+userId);
             boolean existedUser = userRepository.existsByUserId(userId);
-            if(!existedUser) return GetSearchBoardListResponseDto.noExistUser();
+            if(!existedUser) return GetSearchBoardListResponseDto.notExistUser();
 
             System.out.println("getSearchBoardList userId "+userId);
             boardEntities = boardRepository.findAllSearch(userId,searchWord,searchWord);
@@ -54,7 +54,7 @@ public class BoardServiceImplement implements BoardService {
 
         try {
             boolean existedUser = userRepository.existsByUserId(userId);
-            if (!existedUser) return GetUserBoardListResponseDto.noExistUser();
+            if (!existedUser) return GetUserBoardListResponseDto.notExistUser();
 
             BoardEntities = boardRepository.findByUserIdOrderByBoardNumberDesc(userId);
 

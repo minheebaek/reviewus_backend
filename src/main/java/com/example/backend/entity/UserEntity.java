@@ -41,7 +41,9 @@ public class UserEntity {
         this.nickname=nickname;
         this.password=password;
     }
-
+public void updateUserImage(String profileImage){
+        this.profileImage=profileImage;
+}
     @Override
     public String toString() {
         return "User{" +

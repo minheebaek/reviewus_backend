@@ -27,8 +27,8 @@ public class GetUserBoardListResponseDto extends ResponseDto {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    public static ResponseEntity<ResponseDto> noExistUser(){
+    public static ResponseEntity<ResponseDto> notExistUser(){
         ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
     }
 }
