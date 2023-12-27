@@ -3,10 +3,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.user.PatchUserInfoRequestDto;
 import com.example.backend.dto.response.ResponseDto;
-import com.example.backend.dto.response.user.GetSignInUserResponseDto;
-import com.example.backend.dto.response.user.GetUserProfileInfoResponse;
-import com.example.backend.dto.response.user.PatchUserInfoResponseDto;
-import com.example.backend.dto.response.user.PutUserInfoImageResponseDto;
+import com.example.backend.dto.response.user.*;
 import com.example.backend.service.UserService;
 import com.example.backend.service.implement.S3ImageService;
 import com.example.backend.util.IfLogin;
@@ -72,6 +69,7 @@ public class UserController {
         return response;
     }
 
+
     /**
      * 사용자 프로필 정보 불러오기
      * localhost:8080/profile/info
@@ -85,6 +83,21 @@ public class UserController {
             @IfLogin LoginUserDto loginUserDto
     ){
         ResponseEntity<? super GetUserProfileInfoResponse> response = userService.getUserProfileInfo(loginUserDto.getUserId());
+        return response;
+    }
+
+    /**
+     * 사용자 프로필 메인 정보 불러오기
+     * localhost:8080/profile/main
+     *
+     * @parm loginUserDto
+     * @return response
+     */
+    @GetMapping("/main")
+    public ResponseEntity<? super GetUserProfileMainResponseDto> getUserProfileMain(
+            @IfLogin LoginUserDto loginUserDto
+    ){
+        ResponseEntity<? super GetUserProfileMainResponseDto> response = userService.getUserProfileMain(loginUserDto.getUserId());
         return response;
     }
 

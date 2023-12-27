@@ -5,6 +5,7 @@ import com.example.backend.dto.request.user.PatchUserInfoRequestDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.user.GetSignInUserResponseDto;
 import com.example.backend.dto.response.user.GetUserProfileInfoResponse;
+import com.example.backend.dto.response.user.GetUserProfileMainResponseDto;
 import com.example.backend.dto.response.user.PatchUserInfoResponseDto;
 import com.example.backend.entity.UserEntity;
 import com.example.backend.repository.UserRepository;
@@ -56,6 +57,20 @@ public class UserServiceImplement implements UserService {
             return ResponseDto.databaseError();
         }
         return GetUserProfileInfoResponse.success(userEntity);
+    }
+
+    @Override
+    public ResponseEntity<? super GetUserProfileMainResponseDto> getUserProfileMain(Long userId) {
+        UserEntity userEntity = null;
+        try{
+            userEntity = userRepository.findByUserId(userId);
+            if(userEntity==null) return GetUserProfileMainResponseDto.notExistUser();
+
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetUserProfileMainResponseDto.success(userEntity);
     }
 
     @Override
