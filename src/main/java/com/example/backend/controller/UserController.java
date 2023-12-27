@@ -27,44 +27,34 @@ public class UserController {
      * 사용자 프로필 이미지 수정
      * localhost:8080/profile/info
      *
-     * @parm image
+     * @return response
      * @parm loginUserDto
-     * @return PutUserInfoImageResponseDto
+     * @parm image
      */
     @PutMapping("/info/image")
     public ResponseEntity<? super PutUserInfoImageResponseDto> imageUpload(
             @IfLogin LoginUserDto loginUserDto,
             @RequestPart(name = "file") MultipartFile image) {
 
-        if (image.isEmpty()) {
-            /*return ResponseEntity.badRequest().body(false);*/
-            return PutUserInfoImageResponseDto.notPermission();
-        }
-        try {
-            // 파일 업로드 성공 시 true를 반환
-            ResponseEntity<? super PutUserInfoImageResponseDto> response= s3ImageService.uploadImage(loginUserDto.getUserId(),image, "profileImage");
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-            // 파일 업로드 실패 시 500 Internal Server Error와 false 반환
-            return ResponseDto.databaseError();
-        }
+        ResponseEntity<? super PutUserInfoImageResponseDto> response = s3ImageService.uploadImage(loginUserDto.getUserId(), image, "profileImage");
+        return response;
+
     }
 
     /**
      * 사용자 프로필 정보 수정
      * localhost:8080/profile/info
      *
+     * @return response
      * @parm requestBody
      * @parm loginUserDto
-     * @return response
      */
 
     @PatchMapping("info")
     public ResponseEntity<? super PatchUserInfoResponseDto> patchUserInfo(
             @RequestBody @Valid PatchUserInfoRequestDto requestBody,
             @IfLogin LoginUserDto loginUserDto
-            ){
+    ) {
         ResponseEntity<? super PatchUserInfoResponseDto> response = userService.patchUserInfo(requestBody, loginUserDto.getUserId());
         return response;
     }
@@ -74,14 +64,14 @@ public class UserController {
      * 사용자 프로필 정보 불러오기
      * localhost:8080/profile/info
      *
-     * @parm loginUserDto
      * @return response
+     * @parm loginUserDto
      */
 
     @GetMapping("/info")
-    public ResponseEntity<?super GetUserProfileInfoResponse> getUserProfileInfo(
+    public ResponseEntity<? super GetUserProfileInfoResponse> getUserProfileInfo(
             @IfLogin LoginUserDto loginUserDto
-    ){
+    ) {
         ResponseEntity<? super GetUserProfileInfoResponse> response = userService.getUserProfileInfo(loginUserDto.getUserId());
         return response;
     }
@@ -90,13 +80,13 @@ public class UserController {
      * 사용자 프로필 메인 정보 불러오기
      * localhost:8080/profile/main
      *
-     * @parm loginUserDto
      * @return response
+     * @parm loginUserDto
      */
     @GetMapping("/main")
     public ResponseEntity<? super GetUserProfileMainResponseDto> getUserProfileMain(
             @IfLogin LoginUserDto loginUserDto
-    ){
+    ) {
         ResponseEntity<? super GetUserProfileMainResponseDto> response = userService.getUserProfileMain(loginUserDto.getUserId());
         return response;
     }
@@ -105,13 +95,13 @@ public class UserController {
      * 로그인 사용자 정보 불러오기
      * localhost:8080/profile/user
      *
-     * @parm email
      * @return response
+     * @parm email
      */
     @GetMapping("/user")
     public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser(
             @IfLogin LoginUserDto loginUserDto
-    ){
+    ) {
         ResponseEntity<? super GetSignInUserResponseDto> response = userService.getSignInUser(loginUserDto.getEmail());
         return response;
     }

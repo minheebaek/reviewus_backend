@@ -31,17 +31,18 @@ public class S3ImageService {
     private String bucket;
 
     //  multipartFile을 전달받아 file로 전환한 후 s3에 업로드
-    public ResponseEntity<? super PutUserInfoImageResponseDto> uploadImage(Long userId, MultipartFile multipartFile, String dirName) throws IOException {
+    public ResponseEntity<? super PutUserInfoImageResponseDto> uploadImage(Long userId, MultipartFile multipartFile, String dirName) {
         UserEntity userEntity = null;
+        String profileImage = null;
         try {
             userEntity = userRepository.findByUserId(userId);
             if (userEntity == null) return PutUserInfoImageResponseDto.notExistUser();
-            //사용자 검증
-            File uploadFile = convert(multipartFile); //파일 변환할 수 없으면 에러
-            if (uploadFile == null) return ResponseDto.databaseError();
-
-            String profileImage = upload(uploadFile, dirName);
-            userEntity = userRepository.findByUserId(userId);
+            System.out.println(multipartFile+"multipartFile");
+            if (!multipartFile.isEmpty()) {
+                File uploadFile = convert(multipartFile); //파일 변환할 수 없으면 에러
+                if (uploadFile == null) return ResponseDto.databaseError();
+                profileImage = upload(uploadFile, dirName);
+            }
             userEntity.updateUserImage(profileImage);
             userRepository.save(userEntity);
         } catch (Exception exception) {
