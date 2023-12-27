@@ -1,7 +1,6 @@
 package com.example.backend.dto.object;
 
 import com.example.backend.entity.BoardEntity;
-import com.example.backend.entity.BoardListViewEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

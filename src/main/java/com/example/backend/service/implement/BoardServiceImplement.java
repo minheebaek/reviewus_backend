@@ -2,14 +2,12 @@ package com.example.backend.service.implement;
 
 import com.example.backend.common.ResponseCode;
 import com.example.backend.common.ResponseMessage;
+import com.example.backend.dto.object.BoardLatestListItem;
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.board.*;
-import com.example.backend.entity.BoardEntity;
-import com.example.backend.entity.BoardListViewEntity;
-import com.example.backend.entity.BoardTagMapEntity;
-import com.example.backend.entity.TagEntity;
+import com.example.backend.entity.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +29,45 @@ public class BoardServiceImplement implements BoardService {
     private final BoardTagMapRepository boardTagMapRepository;
 
     @Override
-    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord,Long userId) {
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Long userId) {
+        List<BoardEntity> boardEntities = new ArrayList<>();
+        List<TagEntity> tagEntities = new ArrayList<>();
+        List<BoardLatestListItem> boardLatestListItems = new ArrayList<>();
+        try {
+            UserEntity userEntity = userRepository.findByUserId(userId);
+            if (userEntity == null) return GetLatestBoardListResponseDto.notExistUser();
+
+            boardEntities = boardRepository.findByUserIdOrderByBoardNumberDesc(userId);
+            int boadCount = 0;
+            for (BoardEntity boardEntity : boardEntities) {
+                int boardNumber = boardEntity.getBoardNumber();
+                List<String> tagList = new ArrayList<>();
+                tagEntities = tagRepository.findByBoardNumber(boardNumber);
+                for (TagEntity tagEntity : tagEntities) {
+                    String tag = tagEntity.getTag();
+                    tagList.add(tag);
+                }
+                BoardLatestListItem boardTagItem = new BoardLatestListItem(boardEntity, tagList);
+                boardLatestListItems.add(boardTagItem);
+                boadCount++;
+                if(boadCount==6) break;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetLatestBoardListResponseDto.success(boardLatestListItems);
+    }
+
+    @Override
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, Long userId) {
         List<BoardEntity> boardEntities = new ArrayList<>();
         try {
-            System.out.println("existsByUserId userId "+userId);
-            boolean existedUser = userRepository.existsByUserId(userId);
-            if(!existedUser) return GetSearchBoardListResponseDto.notExistUser();
 
-            System.out.println("getSearchBoardList userId "+userId);
-            boardEntities = boardRepository.findAllSearch(userId,searchWord,searchWord);
+            boolean existedUser = userRepository.existsByUserId(userId);
+            if (!existedUser) return GetSearchBoardListResponseDto.notExistUser();
+
+            boardEntities = boardRepository.findAllSearch(userId, searchWord, searchWord);
 
         } catch (Exception exception) {
             exception.printStackTrace();

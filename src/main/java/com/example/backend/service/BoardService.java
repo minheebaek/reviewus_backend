@@ -6,6 +6,7 @@ import com.example.backend.dto.response.board.*;
 import org.springframework.http.ResponseEntity;
 
 public interface BoardService {
+    ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Long userId);
     ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord,Long userId);
     ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(Long userId);
     ResponseEntity<?> deleteBoard(Integer boardNumber, Long userId);
