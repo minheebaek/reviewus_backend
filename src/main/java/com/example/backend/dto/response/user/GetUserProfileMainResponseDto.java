@@ -17,7 +17,7 @@ public class GetUserProfileMainResponseDto extends ResponseDto {
     private GetUserProfileMainResponseDto(UserEntity userEntity){
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.profileImage = userEntity.getProfileImage();
-        this.nickname= userEntity.getEmail();
+        this.nickname= userEntity.getNickname();
         this.email= userEntity.getEmail();
     }
 
