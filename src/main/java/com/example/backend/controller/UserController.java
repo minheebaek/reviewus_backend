@@ -26,6 +26,22 @@ public class UserController {
     private final BoardService boardService;
 
     /**
+     * 회원 탈퇴
+     * localhost:8080/profile/delete
+     *
+     * @parm loginUserDto
+     * @return response
+     */
+    @DeleteMapping("delete")
+    public ResponseEntity<? super DeleteUserResponseDto> deleteUser(
+            @IfLogin LoginUserDto loginUserDto
+    ){
+        ResponseEntity<? super DeleteUserResponseDto> response = userService.deleteUser(loginUserDto.getUserId());
+        return response;
+    }
+
+
+    /**
      * 사용자 최신 게시글 불러오기
      * localhost:8080/profile/latest-list
      *

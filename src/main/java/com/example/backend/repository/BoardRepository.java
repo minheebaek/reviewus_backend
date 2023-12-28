@@ -15,6 +15,7 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     BoardEntity findByBoardNumber(Integer boardNumber);
 
     List<BoardEntity> findByUserIdOrderByBoardNumberDesc(Long userId);
+    List<BoardEntity> findByUserId(Long userId);
 
     @Transactional
     @Modifying
