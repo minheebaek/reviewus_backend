@@ -7,11 +7,16 @@ public interface ResponseCode {
      String VALIDATION_FAILED = "VF";
      String DUPLICATE_EMAIL = "DE";
      String NOT_EXISTED_BOARD = "NB";
+     String WRONG_TOKEN = "WT";
 
      //HTTP Status 401
      String SIGN_IN_FAIL = "SF";
      String AUTHORIZATION_FAIL = "AF";
      String NOT_EXISTED_USER = "NU";
+     String INVALID_TOKEN ="IT";
+     String EXPIRED_TOKEN = "ET";
+     String UNSUPPORTED_TOKEN ="UT";
+     String NOT_FOUND_TOKEN = "NT";
 
      //HTTP Status 403
      String NO_PERMISSION = "NP";
