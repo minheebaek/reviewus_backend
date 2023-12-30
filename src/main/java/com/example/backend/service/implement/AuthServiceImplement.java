@@ -1,10 +1,12 @@
 package com.example.backend.service.implement;
 
 import com.example.backend.dto.RefreshTokenDto;
+import com.example.backend.dto.request.auth.PatchChangePasswdRequestDto;
 import com.example.backend.dto.request.auth.SignInRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.auth.DeleteLogoutDto;
+import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
 import com.example.backend.dto.response.auth.SignInResponseDto;
 import com.example.backend.dto.response.auth.SignUpResponseDto;
 import com.example.backend.entity.RefreshToken;
@@ -20,6 +22,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImplement implements AuthService {
@@ -27,6 +31,42 @@ public class AuthServiceImplement implements AuthService {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenRepository refreshTokenRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    @Override
+    public ResponseEntity<? super PatchChangePasswdResponseDto> changePasswd(Long userId, PatchChangePasswdRequestDto dto) {
+        UserEntity userEntity = null;
+        List<RefreshToken> refreshTokens =null;
+        try{
+            userEntity = userRepository.findByUserId(userId);
+            if(userEntity==null) return PatchChangePasswdResponseDto.notExistUser();
+
+            //1.현재 비밀번호 맞는지 체크
+            if(!passwordEncoder.matches(dto.getCurrentPasswd(),userEntity.getPassword()))
+            return PatchChangePasswdResponseDto.mismatchCurrentPasswd();
+
+            //2.새 비밀번호, 새 비밀번호 확인 맞는지 체크
+            if(dto.getNewPasswd().equals(dto.getCheckPasswd())==false)
+                return PatchChangePasswdResponseDto.mismatchNewPasswd();
+
+            //3.DB 비밀번호 변경
+            String newPasswd = passwordEncoder.encode(dto.getNewPasswd());
+
+            userEntity.setChangePasswd(newPasswd);
+            userRepository.save(userEntity);
+
+            //4.비밀번호 변경 성공 시 로그아웃
+            refreshTokens=refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
+            for(RefreshToken refreshToken : refreshTokens){
+                refreshTokenRepository.delete(refreshToken);
+                break;
+            }
+
+        }catch (Exception exception){
+            exception.printStackTrace();
+
+        }
+        return PatchChangePasswdResponseDto.success();
+    }
 
     /**
      * refreshToken 재발급
@@ -113,6 +153,7 @@ public class AuthServiceImplement implements AuthService {
         return SignInResponseDto.success(accessToken, refreshToken, userEntity);
 
     }
+
 
 
     /**

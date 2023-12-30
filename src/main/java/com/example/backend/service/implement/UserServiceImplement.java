@@ -9,8 +9,6 @@ import com.example.backend.repository.*;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,7 +23,6 @@ public class UserServiceImplement implements UserService {
     private final BoardRepository boardRepository;
     private final TagRepository tagRepository;
     private final BoardTagMapRepository boardTagMapRepository;
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId) {
@@ -34,7 +31,7 @@ public class UserServiceImplement implements UserService {
             userEntity = userRepository.findByUserId(userId);
             if (userEntity == null) return ResponseDto.databaseError();
 
-            List<RefreshToken> refreshTokens =refreshTokenRepository.findByUserId(userId);
+            List<RefreshToken> refreshTokens =refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
             refreshTokenRepository.deleteAll(refreshTokens);
 
             List<BoardEntity> boardEntities = boardRepository.findByUserId(userId);

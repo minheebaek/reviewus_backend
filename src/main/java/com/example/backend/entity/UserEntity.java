@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class UserEntity {
 
     @Id // 이 필드가 Table의 PK.
-    @Column(name="user_Id")
+    @Column(name = "user_Id")
     @GeneratedValue(strategy = GenerationType.IDENTITY) // userId는 자동으로 생성되도록 한다. 1,2,3,4
     private Long userId;
     private String email;
@@ -37,12 +37,18 @@ public class UserEntity {
         this.nickname = dto.getNickname();
     }
 
-    public void setChangeNickname(String nickname){
-        this.nickname=nickname;
+    public void setChangeNickname(String nickname) {
+        this.nickname = nickname;
     }
-public void updateUserImage(String profileImage){
-        this.profileImage=profileImage;
-}
+
+    public void setChangePasswd(String password){
+        this.password=password;
+    }
+
+    public void updateUserImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Override
     public String toString() {
         return "User{" +

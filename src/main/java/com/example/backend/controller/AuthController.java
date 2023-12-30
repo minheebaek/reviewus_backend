@@ -1,12 +1,16 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.RefreshTokenDto;
+import com.example.backend.dto.request.auth.PatchChangePasswdRequestDto;
 import com.example.backend.dto.request.auth.SignInRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
 import com.example.backend.dto.response.auth.DeleteLogoutDto;
+import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
 import com.example.backend.dto.response.auth.SignInResponseDto;
 import com.example.backend.dto.response.auth.SignUpResponseDto;
 import com.example.backend.service.AuthService;
+import com.example.backend.util.IfLogin;
+import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,12 +51,13 @@ public class AuthController {
         return response;
 
     }
+
     /**
      * 로그아웃
      * localhost:8080/logout
      *
-     * @parm requestBody
      * @return response
+     * @parm requestBody
      */
 
     @DeleteMapping("/logout")
@@ -79,5 +84,22 @@ public class AuthController {
         ResponseEntity<? super SignInResponseDto> response = authService.refreshToken(requestBody);
         return response;
 
+    }
+
+    /**
+     * 비밀번호 변경
+     * localhost:8080/auth/changePasswd
+     *
+     * @return response
+     * @parm requestBody
+     */
+
+    @PatchMapping("/changePasswd")
+    public ResponseEntity<? super PatchChangePasswdResponseDto> changePasswd(
+            @IfLogin LoginUserDto loginUserDto,
+            @RequestBody PatchChangePasswdRequestDto dto
+    ) {
+        ResponseEntity<? super PatchChangePasswdResponseDto> response = authService.changePasswd(loginUserDto.getUserId(),dto);
+        return response;
     }
 }

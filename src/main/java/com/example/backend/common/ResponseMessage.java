@@ -11,12 +11,14 @@ public interface ResponseMessage {
 
     //HTTP Status 401
     String SIGN_IN_FAIL = "Login information mismatch.";
+    String PASSWD_FAIL = "Password mismatch";
+    String NEW_PASSWD_FAIL = "New Password mismatch";
     String AUTHORIZATION_FAIL = "Authorization Failed.";
     String NOT_EXISTED_USER = "This user does not exist.";
     String INVALID_TOKEN = "Invalid Token.";
     String EXPIRED_TOKEN = "Expired Token";
     String UNSUPPORTED_TOKEN = "Unsupported Token";
-    String NOT_FOUND_TOKEN ="Not Found Token";
+    String NOT_FOUND_TOKEN = "Not Found Token";
 
     //HTTP Status 403
     String NO_PERMISSION = "Do not have permission.";
