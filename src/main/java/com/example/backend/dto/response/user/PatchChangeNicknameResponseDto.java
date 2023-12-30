@@ -9,14 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
-public class PatchUserInfoResponseDto extends ResponseDto {
+public class PatchChangeNicknameResponseDto extends ResponseDto {
 
-    private PatchUserInfoResponseDto(){
+    private PatchChangeNicknameResponseDto(){
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
 
-    public static ResponseEntity <PatchUserInfoResponseDto> success(){
-        PatchUserInfoResponseDto result = new PatchUserInfoResponseDto();
+    public static ResponseEntity <PatchChangeNicknameResponseDto> success(){
+        PatchChangeNicknameResponseDto result = new PatchChangeNicknameResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

@@ -1,7 +1,7 @@
 package com.example.backend.service.implement;
 
 
-import com.example.backend.dto.request.user.PatchUserInfoRequestDto;
+import com.example.backend.dto.request.user.PatchChangeNicknameRequestDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.user.*;
 import com.example.backend.entity.*;
@@ -57,22 +57,22 @@ public class UserServiceImplement implements UserService {
 
     @Transactional
     @Override
-    public ResponseEntity<? super PatchUserInfoResponseDto> patchUserInfo(PatchUserInfoRequestDto dto, Long userId) {
+    public ResponseEntity<? super PatchChangeNicknameResponseDto> patchChangeNickname(PatchChangeNicknameRequestDto dto, Long userId) {
         try {
             UserEntity userEntity = userRepository.findByUserId(userId);
-            if (userEntity == null) return PatchUserInfoResponseDto.notExistUser();
+            if (userEntity == null) return PatchChangeNicknameResponseDto.notExistUser();
 
 
-            String nickname = dto.getNickname();
-            String password = passwordEncoder.encode(dto.getPassword());
-            userEntity.setUserInfo(nickname, password);
+            String changeNickname = dto.getChangeNickname();
+
+            userEntity.setChangeNickname(changeNickname);
             userRepository.save(userEntity);
 
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
-        return PatchUserInfoResponseDto.success();
+        return PatchChangeNicknameResponseDto.success();
     }
 
     @Override

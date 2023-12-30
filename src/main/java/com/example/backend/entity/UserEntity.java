@@ -37,9 +37,8 @@ public class UserEntity {
         this.nickname = dto.getNickname();
     }
 
-    public void setUserInfo(String nickname, String password){
+    public void setChangeNickname(String nickname){
         this.nickname=nickname;
-        this.password=password;
     }
 public void updateUserImage(String profileImage){
         this.profileImage=profileImage;

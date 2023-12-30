@@ -1,7 +1,8 @@
 package com.example.backend.controller;
 
 
-import com.example.backend.dto.request.user.PatchUserInfoRequestDto;
+import com.example.backend.dto.request.user.PatchChangeNicknameRequestDto;
+import com.example.backend.dto.response.user.PatchChangeNicknameResponseDto;
 import com.example.backend.dto.response.board.GetLatestBoardListResponseDto;
 import com.example.backend.dto.response.user.*;
 import com.example.backend.service.BoardService;
@@ -76,20 +77,20 @@ public class UserController {
     }
 
     /**
-     * 사용자 프로필 정보 수정
-     * localhost:8080/profile/info
+     * 사용자 프로필 닉네임 수정
+     * localhost:8080/profile/changeNickname
      *
      * @return response
      * @parm requestBody
      * @parm loginUserDto
      */
 
-    @PatchMapping("info")
-    public ResponseEntity<? super PatchUserInfoResponseDto> patchUserInfo(
-            @RequestBody @Valid PatchUserInfoRequestDto requestBody,
+    @PatchMapping("/changeNickname")
+    public ResponseEntity<? super PatchChangeNicknameResponseDto> patchChangeNickname(
+            @RequestBody @Valid PatchChangeNicknameRequestDto requestBody,
             @IfLogin LoginUserDto loginUserDto
     ) {
-        ResponseEntity<? super PatchUserInfoResponseDto> response = userService.patchUserInfo(requestBody, loginUserDto.getUserId());
+        ResponseEntity<? super PatchChangeNicknameResponseDto> response = userService.patchChangeNickname(requestBody, loginUserDto.getUserId());
         return response;
     }
 
