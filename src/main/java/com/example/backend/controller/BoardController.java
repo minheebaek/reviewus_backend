@@ -2,7 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
-import com.example.backend.dto.response.BoardResponseDto;
+import com.example.backend.dto.object.BoardResponseDto;
 import com.example.backend.dto.response.board.*;
 import com.example.backend.service.BoardService;
 import com.example.backend.util.IfLogin;
@@ -24,7 +24,7 @@ public class BoardController {
 
     /**
      * 무한스크롤(검색) no offset
-     * localhost:8080/mystudy/findBoard/?size={size}&lastBoardNumber={lastBoardNumber}&searchWord={searchWord}
+     * localhost:8080/mystudy/nooffset/?size={size}&lastBoardNumber={lastBoardNumber}&searchWord={searchWord}
      *
      * @parm pageable
      * @parm lastBoardNumber
@@ -32,15 +32,15 @@ public class BoardController {
      * @parm loginUserDto
      * @return ResponseEntity
      */
-    @GetMapping("/findBoard")
-    public ResponseEntity<Slice<BoardResponseDto>> searchAllProducts(
+    @GetMapping("/nooffset")
+    public ResponseEntity<? super GetNoOffsetResponseDto> searchAllBoards(
             Pageable pageable,
             @RequestParam(value = "lastBoardNumber", required = false) Long lastBoardNumber,
             @RequestParam(value = "searchWord", required = false) String searchWord,
             @IfLogin LoginUserDto loginUserDto
                ) {
-        Slice result=boardService.findUserIdAndBoardByCreatedAtDesc(lastBoardNumber,pageable,searchWord,loginUserDto);
-        return new ResponseEntity<>(result,HttpStatus.OK);
+        ResponseEntity<? super GetNoOffsetResponseDto> result=boardService.findUserIdAndBoardByCreatedAtDesc(lastBoardNumber,pageable,searchWord,loginUserDto);
+        return result;
     }
     /**
      * 특정 유저 검색 게시글 불러오기

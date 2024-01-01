@@ -5,7 +5,7 @@ import com.example.backend.common.ResponseMessage;
 import com.example.backend.dto.object.BoardLatestListItem;
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
-import com.example.backend.dto.response.BoardResponseDto;
+import com.example.backend.dto.object.BoardResponseDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.board.*;
 import com.example.backend.entity.*;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,10 +35,18 @@ public class BoardServiceImplement implements BoardService {
     private final BoardQueryRepository boardQueryRepository;
 
     @Override
-    public Slice<BoardResponseDto> findUserIdAndBoardByCreatedAtDesc(Long lastBoardNumber, Pageable pageable, String searchWord, LoginUserDto loginUserDto) {
+    public ResponseEntity<? super GetNoOffsetResponseDto> findUserIdAndBoardByCreatedAtDesc(Long lastBoardNumber, Pageable pageable, String searchWord, LoginUserDto loginUserDto) {
         UserEntity userEntity = null;
-        userEntity = userRepository.findByUserId(loginUserDto.getUserId());
-        return boardQueryRepository.findBoardWithNoOffset(lastBoardNumber, pageable, searchWord, userEntity.getUserId());
+        Slice<BoardResponseDto> boardResponseDtos = null;
+        try {
+            userEntity = userRepository.findByUserId(loginUserDto.getUserId());
+            if (userEntity == null) return GetNoOffsetResponseDto.notExistUser();
+            boardResponseDtos = boardQueryRepository.findBoardWithNoOffset(lastBoardNumber, pageable, searchWord, userEntity.getUserId());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetNoOffsetResponseDto.success(boardResponseDtos);
     }
 
     @Override

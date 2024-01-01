@@ -1,7 +1,7 @@
 package com.example.backend.repository;
 
 
-import com.example.backend.dto.response.BoardResponseDto;
+import com.example.backend.dto.object.BoardResponseDto;
 import com.example.backend.entity.BoardEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

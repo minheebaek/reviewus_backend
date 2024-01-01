@@ -1,4 +1,4 @@
-package com.example.backend.dto.response;
+package com.example.backend.dto.object;
 
 import com.example.backend.entity.BoardEntity;
 import lombok.*;
