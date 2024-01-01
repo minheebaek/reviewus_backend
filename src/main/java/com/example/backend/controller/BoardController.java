@@ -2,13 +2,16 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
+import com.example.backend.dto.response.BoardResponseDto;
 import com.example.backend.dto.response.board.*;
 import com.example.backend.service.BoardService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +22,26 @@ import javax.validation.Valid;
 public class BoardController {
     private final BoardService boardService;
 
+    /**
+     * 무한스크롤(검색) no offset
+     * localhost:8080/mystudy/findBoard/?size={size}&lastBoardNumber={lastBoardNumber}&searchWord={searchWord}
+     *
+     * @parm pageable
+     * @parm lastBoardNumber
+     * @parm searchWord
+     * @parm loginUserDto
+     * @return ResponseEntity
+     */
+    @GetMapping("/findBoard")
+    public ResponseEntity<Slice<BoardResponseDto>> searchAllProducts(
+            Pageable pageable,
+            @RequestParam(value = "lastBoardNumber", required = false) Long lastBoardNumber,
+            @RequestParam(value = "searchWord", required = false) String searchWord,
+            @IfLogin LoginUserDto loginUserDto
+               ) {
+        Slice result=boardService.findUserIdAndBoardByCreatedAtDesc(lastBoardNumber,pageable,searchWord,loginUserDto);
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
     /**
      * 특정 유저 검색 게시글 불러오기
      * localhost:8080/mystudy/search-list/{searchWord}

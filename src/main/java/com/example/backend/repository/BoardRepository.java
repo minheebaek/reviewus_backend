@@ -21,6 +21,4 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     @Modifying
     @Query(value = "SELECT b FROM board b WHERE b.userId=:userId and (b.title LIKE %:title% OR b.content LIKE %:content% ) ORDER BY b.boardNumber DESC")
     List<BoardEntity> findAllSearch(Long userId, String title, String content);
-
-
 }

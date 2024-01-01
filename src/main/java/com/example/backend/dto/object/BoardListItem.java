@@ -17,7 +17,6 @@ public class BoardListItem {
     private String content;
     private String writeDatetime;
     private boolean alarm;
-    //private String[] tagList;
 
     public BoardListItem(BoardEntity boardEntity) {
         this.boardNumber = boardEntity.getBoardNumber();

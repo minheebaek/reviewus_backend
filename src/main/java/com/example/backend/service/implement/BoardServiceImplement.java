@@ -5,13 +5,17 @@ import com.example.backend.common.ResponseMessage;
 import com.example.backend.dto.object.BoardLatestListItem;
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
+import com.example.backend.dto.response.BoardResponseDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.board.*;
 import com.example.backend.entity.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.BoardService;
+import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,14 @@ public class BoardServiceImplement implements BoardService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final BoardTagMapRepository boardTagMapRepository;
+    private final BoardQueryRepository boardQueryRepository;
+
+    @Override
+    public Slice<BoardResponseDto> findUserIdAndBoardByCreatedAtDesc(Long lastBoardNumber, Pageable pageable, String searchWord, LoginUserDto loginUserDto) {
+        UserEntity userEntity = null;
+        userEntity = userRepository.findByUserId(loginUserDto.getUserId());
+        return boardQueryRepository.findBoardWithNoOffset(lastBoardNumber, pageable, searchWord, userEntity.getUserId());
+    }
 
     @Override
     public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Long userId) {
@@ -50,7 +62,7 @@ public class BoardServiceImplement implements BoardService {
                 BoardLatestListItem boardTagItem = new BoardLatestListItem(boardEntity, tagList);
                 boardLatestListItems.add(boardTagItem);
                 boadCount++;
-                if(boadCount==6) break;
+                if (boadCount == 6) break;
             }
         } catch (Exception exception) {
             exception.printStackTrace();
