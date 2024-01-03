@@ -23,6 +23,25 @@ public class BoardController {
     private final BoardService boardService;
 
     /**
+     * 잔디 불러오기
+     * localhost:8080/mystudy/grass/?startDate={startDate}&endDate={endDate}
+     *
+     * @parm startDate
+     * @parm endDate
+     * @parm loginUserDto
+     * @return response
+     */
+    @GetMapping("/grass")
+    public ResponseEntity<? super GetGrassResponseDto> grassList(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @IfLogin LoginUserDto loginUserDto
+    ){
+        ResponseEntity<? super GetGrassResponseDto> response = boardService.getGrassList(loginUserDto.getUserId(), startDate, endDate);
+        return response;
+    }
+
+    /**
      * 무한스크롤(검색) no offset
      * localhost:8080/mystudy/nooffset/?size={size}&lastBoardNumber={lastBoardNumber}&searchWord={searchWord}
      *

@@ -3,6 +3,7 @@ package com.example.backend.service.implement;
 import com.example.backend.common.ResponseCode;
 import com.example.backend.common.ResponseMessage;
 import com.example.backend.dto.object.BoardLatestListItem;
+import com.example.backend.dto.object.GrassItemDto;
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
 import com.example.backend.dto.object.BoardResponseDto;
@@ -37,9 +38,21 @@ public class BoardServiceImplement implements BoardService {
     private final GrassRepository grassRepository;
 
     @Override
-    public ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, LocalDate startDate, LocalDate endDate) {
-
-        return null;
+    public ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, String startDate, String endDate) {
+        List<GrassItemDto> grassList = new ArrayList<>();
+        try {
+            UserEntity userEntity=userRepository.findByUserId(userId);
+            if(userEntity==null) return GetGrassResponseDto.notExistUser();
+            List<GrassEntity> grassEntities = grassRepository.findAllGrassList(userId, startDate, endDate);
+            for(GrassEntity grassEntity:grassEntities){
+                GrassItemDto grassItemDto = new GrassItemDto(grassEntity);
+                grassList.add(grassItemDto);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetGrassResponseDto.success(grassList);
     }
 
     @Override

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 
 public interface BoardService {
-    ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, LocalDate startDate, LocalDate endDate);
+    ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, String startDate, String endDate);
 
     ResponseEntity<? super GetNoOffsetResponseDto> findUserIdAndBoardByCreatedAtDesc(Long userId, Pageable pageable, String searchWord, LoginUserDto loginUserDto);
 
