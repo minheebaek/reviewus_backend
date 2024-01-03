@@ -16,11 +16,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,13 @@ public class BoardServiceImplement implements BoardService {
     private final TagRepository tagRepository;
     private final BoardTagMapRepository boardTagMapRepository;
     private final BoardQueryRepository boardQueryRepository;
+    private final GrassRepository grassRepository;
+
+    @Override
+    public ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, LocalDate startDate, LocalDate endDate) {
+
+        return null;
+    }
 
     @Override
     public ResponseEntity<? super GetNoOffsetResponseDto> findUserIdAndBoardByCreatedAtDesc(Long lastBoardNumber, Pageable pageable, String searchWord, LoginUserDto loginUserDto) {
@@ -246,7 +254,17 @@ public class BoardServiceImplement implements BoardService {
             tagRepository.saveAll(tagEntities);
             boardTagMapRepository.saveAll(boardTagMapEntities);
 
-
+            LocalDate date = LocalDate.now();
+            String localDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            GrassEntity grassEntity = grassRepository.findByUserIdAndGrassDate(userId, localDate);
+            if (grassEntity == null) {
+                GrassEntity grass = new GrassEntity(userId, localDate);
+                grassRepository.save(grass);
+            }
+            if (grassEntity != null) {
+                grassEntity.updateGrass(grassEntity);
+                grassRepository.save(grassEntity);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
