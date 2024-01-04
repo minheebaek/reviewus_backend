@@ -10,20 +10,23 @@ import com.example.backend.dto.response.auth.SignInResponseDto;
 import com.example.backend.dto.response.auth.SignUpResponseDto;
 import com.example.backend.dto.response.user.DeleteUserResponseDto;
 import com.example.backend.service.AuthService;
+import com.example.backend.service.EmailService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-
+    private final EmailService emailService;
     /**
      * 회원가입
      * localhost:8080/signup
@@ -117,5 +120,13 @@ public class AuthController {
     ){
         ResponseEntity<? super DeleteUserResponseDto> response = authService.deleteUser(loginUserDto.getUserId());
         return response;
+    }
+
+    @PostMapping("findPassWd/mailConfirm")
+    @ResponseBody
+    public String mailConfirm(@RequestParam String email) throws Exception {
+        String code = emailService.sendSimpleMessage(email);
+        log.info("인증코드 : " + code);
+        return code;
     }
 }
