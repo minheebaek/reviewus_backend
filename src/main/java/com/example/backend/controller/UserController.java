@@ -5,10 +5,9 @@ import com.example.backend.dto.request.user.PatchChangeNicknameRequestDto;
 import com.example.backend.dto.response.user.PatchChangeNicknameResponseDto;
 import com.example.backend.dto.response.board.GetLatestBoardListResponseDto;
 import com.example.backend.dto.response.user.*;
-import com.example.backend.service.AuthService;
 import com.example.backend.service.BoardService;
 import com.example.backend.service.UserService;
-import com.example.backend.service.implement.S3ImageService;
+import com.example.backend.service.S3ImageService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final AuthService authService;
     private final S3ImageService s3ImageService;
     private final BoardService boardService;
     private final UserService userService;
