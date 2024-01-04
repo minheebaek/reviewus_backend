@@ -5,6 +5,7 @@ import com.example.backend.dto.request.user.PatchChangeNicknameRequestDto;
 import com.example.backend.dto.response.user.PatchChangeNicknameResponseDto;
 import com.example.backend.dto.response.board.GetLatestBoardListResponseDto;
 import com.example.backend.dto.response.user.*;
+import com.example.backend.service.AuthService;
 import com.example.backend.service.BoardService;
 import com.example.backend.service.UserService;
 import com.example.backend.service.implement.S3ImageService;
@@ -22,38 +23,24 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final S3ImageService s3ImageService;
     private final BoardService boardService;
-
-    /**
-     * 회원 탈퇴
-     * localhost:8080/profile/delete
-     *
-     * @parm loginUserDto
-     * @return response
-     */
-    @DeleteMapping("delete")
-    public ResponseEntity<? super DeleteUserResponseDto> deleteUser(
-            @IfLogin LoginUserDto loginUserDto
-    ){
-        ResponseEntity<? super DeleteUserResponseDto> response = userService.deleteUser(loginUserDto.getUserId());
-        return response;
-    }
+    private final UserService userService;
 
 
     /**
      * 사용자 최신 게시글 불러오기
      * localhost:8080/profile/latest-list
      *
-     * @parm loginUserDto
      * @return response
+     * @parm loginUserDto
      */
 
     @GetMapping("/latest-list")
     public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(
             @IfLogin LoginUserDto loginUserDto
-    ){
+    ) {
         ResponseEntity<? super GetLatestBoardListResponseDto> response = boardService.getLatestBoardList(loginUserDto.getUserId());
         return response;
     }

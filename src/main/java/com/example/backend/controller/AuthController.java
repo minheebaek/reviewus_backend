@@ -8,6 +8,7 @@ import com.example.backend.dto.response.auth.DeleteLogoutDto;
 import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
 import com.example.backend.dto.response.auth.SignInResponseDto;
 import com.example.backend.dto.response.auth.SignUpResponseDto;
+import com.example.backend.dto.response.user.DeleteUserResponseDto;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;
@@ -100,6 +101,21 @@ public class AuthController {
             @RequestBody PatchChangePasswdRequestDto dto
     ) {
         ResponseEntity<? super PatchChangePasswdResponseDto> response = authService.changePasswd(loginUserDto.getUserId(),dto);
+        return response;
+    }
+
+    /**
+     * 회원 탈퇴
+     * localhost:8080/auth/delete
+     *
+     * @parm loginUserDto
+     * @return response
+     */
+    @DeleteMapping("delete")
+    public ResponseEntity<? super DeleteUserResponseDto> deleteUser(
+            @IfLogin LoginUserDto loginUserDto
+    ){
+        ResponseEntity<? super DeleteUserResponseDto> response = authService.deleteUser(loginUserDto.getUserId());
         return response;
     }
 }

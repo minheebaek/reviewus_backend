@@ -24,33 +24,7 @@ public class UserServiceImplement implements UserService {
     private final TagRepository tagRepository;
     private final BoardTagMapRepository boardTagMapRepository;
 
-    @Override
-    public ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId) {
-        UserEntity userEntity = null;
-        try {
-            userEntity = userRepository.findByUserId(userId);
-            if (userEntity == null) return ResponseDto.databaseError();
 
-            List<RefreshToken> refreshTokens =refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
-            refreshTokenRepository.deleteAll(refreshTokens);
-
-            List<BoardEntity> boardEntities = boardRepository.findByUserId(userId);
-            for(BoardEntity boardEntity : boardEntities){
-                List<BoardTagMapEntity> boardTagMapEntities=boardTagMapRepository.findByBoardEntity(boardEntity);
-                boardTagMapRepository.deleteAll(boardTagMapEntities);
-
-                List<TagEntity> tagEntities=tagRepository.findByBoardNumber(boardEntity.getBoardNumber());
-                tagRepository.deleteAll(tagEntities);
-            }
-            boardRepository.deleteAll(boardEntities);
-
-            userRepository.delete(userEntity);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-            return ResponseDto.databaseError();
-        }
-        return DeleteUserResponseDto.success();
-    }
 
     @Transactional
     @Override

@@ -9,10 +9,9 @@ import com.example.backend.dto.response.auth.DeleteLogoutDto;
 import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
 import com.example.backend.dto.response.auth.SignInResponseDto;
 import com.example.backend.dto.response.auth.SignUpResponseDto;
-import com.example.backend.entity.RefreshToken;
-import com.example.backend.entity.UserEntity;
-import com.example.backend.repository.RefreshTokenRepository;
-import com.example.backend.repository.UserRepository;
+import com.example.backend.dto.response.user.DeleteUserResponseDto;
+import com.example.backend.entity.*;
+import com.example.backend.repository.*;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.JwtTokenizer;
 import io.jsonwebtoken.Claims;
@@ -31,6 +30,41 @@ public class AuthServiceImplement implements AuthService {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenRepository refreshTokenRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BoardRepository boardRepository;
+    private final BoardTagMapRepository boardTagMapRepository;
+    private final TagRepository tagRepository;
+    private final GrassRepository grassRepository;
+
+    @Override
+    public ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId) {
+        UserEntity userEntity = null;
+        try {
+            userEntity = userRepository.findByUserId(userId);
+            if (userEntity == null) return ResponseDto.databaseError();
+
+            List<RefreshToken> refreshTokens =refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
+            refreshTokenRepository.deleteAll(refreshTokens);
+
+            List<GrassEntity> grassEntities = grassRepository.findByUserId(userId);
+            grassRepository.deleteAll(grassEntities);
+
+            List<BoardEntity> boardEntities = boardRepository.findByUserId(userId);
+            for(BoardEntity boardEntity : boardEntities){
+                List<BoardTagMapEntity> boardTagMapEntities=boardTagMapRepository.findByBoardEntity(boardEntity);
+                boardTagMapRepository.deleteAll(boardTagMapEntities);
+
+                List<TagEntity> tagEntities=tagRepository.findByBoardNumber(boardEntity.getBoardNumber());
+                tagRepository.deleteAll(tagEntities);
+            }
+            boardRepository.deleteAll(boardEntities);
+
+            userRepository.delete(userEntity);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return DeleteUserResponseDto.success();
+    }
 
     @Override
     public ResponseEntity<? super PatchChangePasswdResponseDto> changePasswd(Long userId, PatchChangePasswdRequestDto dto) {

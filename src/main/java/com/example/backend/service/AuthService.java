@@ -8,10 +8,14 @@ import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
 import com.example.backend.dto.response.auth.SignInResponseDto;
 import com.example.backend.dto.response.auth.SignUpResponseDto;
 import com.example.backend.dto.response.auth.DeleteLogoutDto;
+import com.example.backend.dto.response.user.DeleteUserResponseDto;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
+    ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId);
+
     ResponseEntity<? super PatchChangePasswdResponseDto> changePasswd(Long userId, PatchChangePasswdRequestDto dto);
+
     ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto);
 
     ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto requestBody);
