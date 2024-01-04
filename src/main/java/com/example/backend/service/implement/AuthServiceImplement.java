@@ -40,7 +40,7 @@ public class AuthServiceImplement implements AuthService {
         UserEntity userEntity = null;
         try {
             userEntity = userRepository.findByUserId(userId);
-            if (userEntity == null) return ResponseDto.databaseError();
+            if (userEntity == null) return DeleteUserResponseDto.notExistUser();
 
             List<RefreshToken> refreshTokens =refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
             refreshTokenRepository.deleteAll(refreshTokens);
