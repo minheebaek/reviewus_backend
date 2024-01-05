@@ -2,12 +2,9 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.RefreshTokenDto;
 import com.example.backend.dto.request.auth.PatchChangePasswdRequestDto;
+import com.example.backend.dto.response.auth.*;
 import com.example.backend.dto.request.auth.SignInRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
-import com.example.backend.dto.response.auth.DeleteLogoutDto;
-import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
-import com.example.backend.dto.response.auth.SignInResponseDto;
-import com.example.backend.dto.response.auth.SignUpResponseDto;
 import com.example.backend.dto.response.user.DeleteUserResponseDto;
 import com.example.backend.service.AuthService;
 import com.example.backend.service.EmailService;
@@ -26,7 +23,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final EmailService emailService;
+
     /**
      * 회원가입
      * localhost:8080/signup
@@ -120,13 +117,5 @@ public class AuthController {
     ){
         ResponseEntity<? super DeleteUserResponseDto> response = authService.deleteUser(loginUserDto.getUserId());
         return response;
-    }
-
-    @PostMapping("findPassWd/mailConfirm")
-    @ResponseBody
-    public String mailConfirm(@RequestParam String email) throws Exception {
-        String code = emailService.sendSimpleMessage(email);
-        log.info("인증코드 : " + code);
-        return code;
     }
 }
