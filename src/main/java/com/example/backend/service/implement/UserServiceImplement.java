@@ -1,8 +1,10 @@
 package com.example.backend.service.implement;
 
 
+import com.example.backend.dto.request.find.PostFindPassWdVerifyIdRequestDto;
 import com.example.backend.dto.request.user.PatchChangeNicknameRequestDto;
 import com.example.backend.dto.response.ResponseDto;
+import com.example.backend.dto.response.find.PostFindPassWdVerifyIdResponseDto;
 import com.example.backend.dto.response.user.*;
 import com.example.backend.entity.*;
 import com.example.backend.repository.*;
@@ -12,19 +14,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final BoardRepository boardRepository;
-    private final TagRepository tagRepository;
-    private final BoardTagMapRepository boardTagMapRepository;
 
 
+    @Override
+    public ResponseEntity<? super PostFindPassWdVerifyIdResponseDto> verifyId(PostFindPassWdVerifyIdRequestDto dto) {
+        try{
+            UserEntity userEntity=userRepository.findByEmail(dto.getEmail());
+            if(userEntity==null) return PostFindPassWdVerifyIdResponseDto.notExistUser();
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PostFindPassWdVerifyIdResponseDto.success();
+    }
 
     @Transactional
     @Override
