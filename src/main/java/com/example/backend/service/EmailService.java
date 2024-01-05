@@ -1,7 +1,7 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.response.auth.GetFindPassWdVerifyResponseDto;
-import com.example.backend.dto.response.auth.PostFindPassWdResponsetDto;
+import com.example.backend.dto.response.find.GetFindPassWdVerifyResponseDto;
+import com.example.backend.dto.response.find.PostFindPassWdResponsetDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,7 +80,7 @@ public class EmailService {
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
-        return PostFindPassWdResponsetDto.success(ePw); // 메일로 보냈던 인증 코드를 서버로 리턴
+        return PostFindPassWdResponsetDto.success();
     }
 
     public ResponseEntity<? super GetFindPassWdVerifyResponseDto> verifyEmail(String key) throws ChangeSetPersister.NotFoundException {

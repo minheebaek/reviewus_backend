@@ -2,11 +2,10 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.find.PostFindPassWdVerifyIdRequestDto;
 import com.example.backend.dto.request.find.PutChangePassWdRequestDto;
-import com.example.backend.dto.response.auth.GetFindPassWdVerifyResponseDto;
-import com.example.backend.dto.response.auth.PostFindPassWdResponsetDto;
+import com.example.backend.dto.response.find.GetFindPassWdVerifyResponseDto;
+import com.example.backend.dto.response.find.PostFindPassWdResponsetDto;
 import com.example.backend.dto.response.find.PostFindPassWdVerifyIdResponseDto;
 import com.example.backend.dto.response.find.PutChangePassWdResponseDto;
-import com.example.backend.repository.UserRepository;
 import com.example.backend.service.EmailService;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
