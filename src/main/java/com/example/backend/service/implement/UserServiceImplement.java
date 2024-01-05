@@ -2,15 +2,19 @@ package com.example.backend.service.implement;
 
 
 import com.example.backend.dto.request.find.PostFindPassWdVerifyIdRequestDto;
+import com.example.backend.dto.request.find.PutChangePassWdRequestDto;
 import com.example.backend.dto.request.user.PatchChangeNicknameRequestDto;
 import com.example.backend.dto.response.ResponseDto;
 import com.example.backend.dto.response.find.PostFindPassWdVerifyIdResponseDto;
+import com.example.backend.dto.response.find.PutChangePassWdResponseDto;
 import com.example.backend.dto.response.user.*;
 import com.example.backend.entity.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,18 +24,38 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
-
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public ResponseEntity<? super PostFindPassWdVerifyIdResponseDto> verifyId(PostFindPassWdVerifyIdRequestDto dto) {
+    public ResponseEntity<? super PutChangePassWdResponseDto> changePassWd(PutChangePassWdRequestDto dto) {
         try{
-            UserEntity userEntity=userRepository.findByEmail(dto.getEmail());
-            if(userEntity==null) return PostFindPassWdVerifyIdResponseDto.notExistUser();
+           if(dto.getNewPasswd().equals(dto.getCheckPasswd())==false){
+               return PutChangePassWdResponseDto.mismatchNewPassWd();
+           }
+           String newPassWd = passwordEncoder.encode(dto.getNewPasswd());
+           UserEntity userEntity=userRepository.findByEmail(dto.getEmail());
+           userEntity.setChangePasswd(newPassWd);
+           userRepository.save(userEntity);
+
         }catch (Exception exception){
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
-        return PostFindPassWdVerifyIdResponseDto.success();
+        return PutChangePassWdResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PostFindPassWdVerifyIdResponseDto> verifyId(PostFindPassWdVerifyIdRequestDto dto) {
+        String email = null;
+        try{
+            UserEntity userEntity=userRepository.findByEmail(dto.getEmail());
+            if(userEntity==null) return PostFindPassWdVerifyIdResponseDto.notExistUser();
+            email = userEntity.getEmail();
+        }catch (Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PostFindPassWdVerifyIdResponseDto.success(email);
     }
 
     @Transactional

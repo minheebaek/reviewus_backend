@@ -1,9 +1,11 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.request.find.PostFindPassWdVerifyIdRequestDto;
+import com.example.backend.dto.request.find.PutChangePassWdRequestDto;
 import com.example.backend.dto.response.auth.GetFindPassWdVerifyResponseDto;
 import com.example.backend.dto.response.auth.PostFindPassWdResponsetDto;
 import com.example.backend.dto.response.find.PostFindPassWdVerifyIdResponseDto;
+import com.example.backend.dto.response.find.PutChangePassWdResponseDto;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.service.EmailService;
 import com.example.backend.service.UserService;
@@ -63,6 +65,19 @@ public class FindController {
     @GetMapping("/PassWd/verifications")
     public ResponseEntity<? super GetFindPassWdVerifyResponseDto> mailVerification(@RequestParam("code") String authCode) throws ChangeSetPersister.NotFoundException {
         ResponseEntity<? super GetFindPassWdVerifyResponseDto> response = emailService.verifyEmail(authCode);
+        return response;
+    }
+
+    /**
+     * 비밀번호 찾기 - 새 비밀번호 생성
+     * localhost:8080/find/changePassWd
+     *
+     * @parm authCode
+     * @return response
+     */
+    @PutMapping("/changePassWd")
+    public ResponseEntity<? super PutChangePassWdResponseDto> changePassWd(@RequestBody @Valid PutChangePassWdRequestDto dto){
+        ResponseEntity<? super PutChangePassWdResponseDto> response = userService.changePassWd(dto);
         return response;
     }
 }
