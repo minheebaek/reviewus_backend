@@ -1,16 +1,12 @@
 jwt:
   secretKey: ${JWT_SECRETKEY}
   refreshKey: ${JWT_REFRESHKEY}
-
-
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${DATA_BASE_NAME}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${MYSQL_USER_NAME}
     password: ${MYSQL_PASSWORD}
-
   jpa:
     database: mysql
     show-sql: true
@@ -37,8 +33,8 @@ spring:
           writetimeout: 5000
     auth-code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
 redis:
-  host: localhost
-  port: 6379
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
 
 cloud:
   aws:
@@ -51,7 +47,6 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
-
 logging:
   level:
     com:
