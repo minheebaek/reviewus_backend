@@ -26,13 +26,10 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final RedisService redisService;
 
-    //인증번호 생성
-    private final String ePw = createKey();
-
     @Value("${spring.mail.username}")
     private String id;
 
-    public MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage createMessage(String to, String ePw) throws MessagingException, UnsupportedEncodingException {
         log.info("보내는 대상 : " + to);
         log.info("인증 번호 : " + ePw);
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -56,12 +53,14 @@ public class EmailService {
 
     // 인증코드 만들기
     public static String createKey() {
+        log.info("createKey 실행");
         StringBuffer key = new StringBuffer();
         Random rnd = new Random();
 
         for (int i = 0; i < 6; i++) { // 인증코드 6자리
             key.append((rnd.nextInt(10)));
         }
+
         return key.toString();
     }
 
@@ -72,7 +71,8 @@ public class EmailService {
         bean으로 등록해둔 javaMailSender 객체를 사용하여 이메일 send
      */
     public ResponseEntity<? super PostFindPassWdResponsetDto> sendSimpleMessage(String to) throws Exception {
-        MimeMessage message = createMessage(to);
+        String ePw = createKey();
+        MimeMessage message = createMessage(to, ePw);
         try {
             redisService.setDataExpire(ePw, to, 60 * 5L); // 유효시간 5분
             javaMailSender.send(message); // 메일 발송
