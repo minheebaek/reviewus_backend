@@ -36,6 +36,7 @@ public class OAuthService {
                 userEntity = new UserEntity(requestBody);
                 userRepository.save(userEntity);
             }
+            userEntity = userRepository.findByEmail(requestBody.getEmail());
             accessToken = jwtTokenizer.createAccessToken(userEntity.getUserId(), userEntity.getEmail(), userEntity.getNickname());
             refreshToken = jwtTokenizer.createRefreshToken(userEntity.getUserId(), userEntity.getEmail(), userEntity.getNickname());
 
