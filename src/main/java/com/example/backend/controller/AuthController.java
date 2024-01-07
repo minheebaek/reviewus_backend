@@ -7,7 +7,6 @@ import com.example.backend.dto.request.auth.SignInRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
 import com.example.backend.dto.response.user.DeleteUserResponseDto;
 import com.example.backend.service.AuthService;
-import com.example.backend.service.EmailService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
@@ -118,4 +117,5 @@ public class AuthController {
         ResponseEntity<? super DeleteUserResponseDto> response = authService.deleteUser(loginUserDto.getUserId());
         return response;
     }
+
 }

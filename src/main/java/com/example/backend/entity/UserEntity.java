@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import com.example.backend.dto.request.OAuth.PostOAuthSigninRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,12 @@ public class UserEntity {
         this.email = dto.getEmail();
         this.password = dto.getPassword();
         this.nickname = dto.getNickname();
+    }
+    public UserEntity(PostOAuthSigninRequestDto dto){
+        this.email=dto.getEmail();
+        this.password=null;
+        this.nickname=dto.getName();
+        this.profileImage =dto.getPicture();
     }
 
     public void setChangeNickname(String nickname) {
