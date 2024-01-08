@@ -16,7 +16,12 @@ public class OAuthController {
     private final OAuthService oAuthService;
     @GetMapping("code/google")
     public ResponseEntity<String> successGoogleLogin(@RequestParam("code") String accessCode){
-        return oAuthService.getGoogleAccessToken(accessCode);
+        return oAuthService.successGoogleLogin(accessCode);
+    }
+
+    @PostMapping("/code/google")
+    public ResponseEntity<String> getGoogleAccessToken(@RequestParam("code") String accessToken){
+        return oAuthService.getGoogleAccessToken(accessToken);
     }
 
     @PostMapping("signin/google")
