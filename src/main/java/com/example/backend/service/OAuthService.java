@@ -33,11 +33,7 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenizer jwtTokenizer;
-
-    public ResponseEntity<String> successGoogleLogin(String code) {
-        System.out.println("code:" + code);
-        return ResponseEntity.status(HttpStatus.OK).body(code);
-    }
+    
 
     public ResponseEntity<String> getGoogleAccessToken(String accessCode) {
 

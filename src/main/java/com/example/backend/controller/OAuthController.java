@@ -14,10 +14,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class OAuthController {
     private final OAuthService oAuthService;
-    @GetMapping("code/google")
-    public ResponseEntity<String> successGoogleLogin(@RequestParam("code") String accessCode){
-        return oAuthService.successGoogleLogin(accessCode);
-    }
 
     @PostMapping("/code/google")
     public ResponseEntity<String> getGoogleAccessToken(@RequestParam("code") String accessToken){
