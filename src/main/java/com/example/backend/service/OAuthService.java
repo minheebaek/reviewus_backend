@@ -33,8 +33,16 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenizer jwtTokenizer;
-    
 
+    public String generate() {
+        return "https://accounts.google.com/o/oauth2/v2/auth" + "?"
+                + "client_id=" + GOOGLE_CLIENT_ID + "&"
+                + "redirect_uri=" + LOGIN_REDIRECT_URI + "&"
+                + "response_type=code&"
+                + "scope=" + "email" + "&"
+                + "access_type=offline&"
+                + "prompt=consent";
+    }
     public ResponseEntity<String> getGoogleAccessToken(String accessCode) {
 
         RestTemplate restTemplate=new RestTemplate();

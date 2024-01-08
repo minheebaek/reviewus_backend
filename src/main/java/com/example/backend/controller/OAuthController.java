@@ -15,6 +15,12 @@ import javax.validation.Valid;
 public class OAuthController {
     private final OAuthService oAuthService;
 
+    @GetMapping("generate-uri")
+    public String test(){
+        return oAuthService.generate();
+    }
+
+
     @PostMapping("/code/google")
     public ResponseEntity<String> getGoogleAccessToken(@RequestParam("code") String accessToken){
         return oAuthService.getGoogleAccessToken(accessToken);
