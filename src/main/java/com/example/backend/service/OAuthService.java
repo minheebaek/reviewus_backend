@@ -11,6 +11,7 @@ import com.example.backend.repository.UserRepository;
 import com.example.backend.util.JwtTokenizer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OAuthService {
 
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -40,8 +42,7 @@ public class OAuthService {
                 + "redirect_uri=" + LOGIN_REDIRECT_URI + "&"
                 + "response_type=code&"
                 + "scope=" + "email" + "&"
-                + "access_type=offline&"
-                + "prompt=consent";
+                + "access_type=offline";
     }
 
 
@@ -50,10 +51,13 @@ public class OAuthService {
          ResponseEntity<String> accessTokenResponse=googleOAuthService.requestGoogleAccessToken(requestBody);
         //2.json 형식의 응답객체를 deserialization해서 자바객체에 담기
          SocialOAuthTokenDto socialOAuthTokenDto =googleOAuthService.getGoogleAccessToken(accessTokenResponse);
+         log.info("getAccess_token"+socialOAuthTokenDto.getAccess_token());
         //3.구글이 준 액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아옴
         ResponseEntity<String> userInfoResponse =googleOAuthService.requestUserInfo(socialOAuthTokenDto);
         //4.json 형식의 응답 객체를 자바 객체로 역직렬화
         PostOAuthSigninRequestDto postOAuthSigninRequestDto=googleOAuthService.getUserInfo(userInfoResponse);
+        log.info("email"+postOAuthSigninRequestDto.getEmail());
+        log.info("name"+postOAuthSigninRequestDto.getName());
 
         String accessToken = null;
         String refreshToken = null;
