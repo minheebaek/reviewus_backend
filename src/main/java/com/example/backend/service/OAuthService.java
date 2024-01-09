@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.object.SocialOAuthTokenDto;
 import com.example.backend.dto.request.OAuth.PostOAuthSigninRequestDto;
 import com.example.backend.dto.response.PostOAuthSigninResponseDto;
 import com.example.backend.dto.response.ResponseDto;
@@ -8,15 +9,13 @@ import com.example.backend.entity.UserEntity;
 import com.example.backend.repository.RefreshTokenRepository;
 import com.example.backend.repository.UserRepository;
 import com.example.backend.util.JwtTokenizer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +32,7 @@ public class OAuthService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenizer jwtTokenizer;
+    private final GoogleOAuthService googleOAuthService;
 
     public String generate() {
         return "https://accounts.google.com/o/oauth2/v2/auth" + "?"
@@ -43,36 +43,28 @@ public class OAuthService {
                 + "access_type=offline&"
                 + "prompt=consent";
     }
-    public ResponseEntity<String> getGoogleAccessToken(String accessCode) {
 
-        RestTemplate restTemplate=new RestTemplate();
-        Map<String, String> params = new HashMap<>();
 
-        params.put("code", accessCode);
-        params.put("client_id", GOOGLE_CLIENT_ID);
-        params.put("client_secret", GOOGLE_CLIENT_SECRET);
-        params.put("redirect_uri", LOGIN_REDIRECT_URI);
-        params.put("grant_type", "authorization_code");
+    public ResponseEntity<? super PostOAuthSigninResponseDto> OAuthLogin(String requestBody) throws JsonProcessingException {
+        //1.code로 json 형식의 응답객체를 받아옴
+         ResponseEntity<String> accessTokenResponse=googleOAuthService.requestGoogleAccessToken(requestBody);
+        //2.json 형식의 응답객체를 deserialization해서 자바객체에 담기
+         SocialOAuthTokenDto socialOAuthTokenDto =googleOAuthService.getGoogleAccessToken(accessTokenResponse);
+        //3.구글이 준 액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아옴
+        ResponseEntity<String> userInfoResponse =googleOAuthService.requestUserInfo(socialOAuthTokenDto);
+        //4.json 형식의 응답 객체를 자바 객체로 역직렬화
+        PostOAuthSigninRequestDto postOAuthSigninRequestDto=googleOAuthService.getUserInfo(userInfoResponse);
 
-        ResponseEntity<String> responseEntity=restTemplate.postForEntity(GOOGLE_TOKEN_URL, params,String.class);
-
-        if(responseEntity.getStatusCode() == HttpStatus.OK){
-            return responseEntity;
-        }
-        return null;
-    }
-
-    public ResponseEntity<? super PostOAuthSigninResponseDto> googleLogin(PostOAuthSigninRequestDto requestBody) {
         String accessToken = null;
         String refreshToken = null;
         UserEntity userEntity = null;
         try {
-            boolean existedEmail = userRepository.existsByEmail(requestBody.getEmail());
+            boolean existedEmail = userRepository.existsByEmail(postOAuthSigninRequestDto.getEmail());
             if (!existedEmail) { //강제 회원가입 진행
-                userEntity = new UserEntity(requestBody);
+                userEntity = new UserEntity(postOAuthSigninRequestDto);
                 userRepository.save(userEntity);
             }
-            userEntity = userRepository.findByEmail(requestBody.getEmail());
+            userEntity = userRepository.findByEmail(postOAuthSigninRequestDto.getEmail());
             accessToken = jwtTokenizer.createAccessToken(userEntity.getUserId(), userEntity.getEmail(), userEntity.getNickname());
             refreshToken = jwtTokenizer.createRefreshToken(userEntity.getUserId(), userEntity.getEmail(), userEntity.getNickname());
 
