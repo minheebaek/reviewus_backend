@@ -12,6 +12,7 @@ import com.example.backend.dto.response.board.*;
 import com.example.backend.entity.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.BoardService;
+import com.example.backend.service.NotificationService;
 import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardTagMapRepository boardTagMapRepository;
     private final BoardQueryRepository boardQueryRepository;
     private final GrassRepository grassRepository;
+    private final ReviewNotifyRepository reviewNotifyRepository;
 
     @Override
     public ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, String startDate, String endDate) {
@@ -268,6 +270,7 @@ public class BoardServiceImplement implements BoardService {
             boardTagMapRepository.saveAll(boardTagMapEntities);
 
             LocalDate date = LocalDate.now();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String localDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             GrassEntity grassEntity = grassRepository.findByUserIdAndGrassDate(userId, localDate);
             if (grassEntity == null) {
@@ -278,6 +281,17 @@ public class BoardServiceImplement implements BoardService {
                 grassEntity.updateGrass(grassEntity);
                 grassRepository.save(grassEntity);
             }
+
+            ReviewNotifyEntity reviewNotifyEntity = reviewNotifyRepository.findByUserIdAndBoardDate(userId, localDate);
+            if (reviewNotifyEntity == null) {
+                ReviewNotifyEntity reviewNotify = new ReviewNotifyEntity(userId, localDate);
+                reviewNotifyRepository.save(reviewNotify);
+            }
+            if (reviewNotifyEntity != null) {
+                reviewNotifyEntity.updateReviewNotify(reviewNotifyEntity);
+                reviewNotifyRepository.save(reviewNotifyEntity);
+            }
+
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
