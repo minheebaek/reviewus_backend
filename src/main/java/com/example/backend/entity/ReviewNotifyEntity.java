@@ -3,13 +3,17 @@ package com.example.backend.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
+@Table(name = "reviewnotify")
 public class ReviewNotifyEntity {
 
     @Id
@@ -25,6 +29,8 @@ public class ReviewNotifyEntity {
 
     @Column(name = "board_count")
     private int boardCount;
+
+    private LocalDate readDate;
 
     public ReviewNotifyEntity(Long userId, String localDate) {
         this.userId=userId;

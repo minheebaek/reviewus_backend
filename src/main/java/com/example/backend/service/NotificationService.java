@@ -80,5 +80,30 @@ public class NotificationService {
         }
     }
 
+    /*// 알림 삭제
+    public MsgResponseDto deleteNotification(Long id) throws IOException {
+        Notification notification = notificationRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("알림을 찾을 수 없습니다.")
+        );
+
+        Long userId = notification.getPost().getUser().getId();
+
+        notificationRepository.delete(notification);
+
+        // 알림 개수 감소
+        if (notificationCounts.containsKey(userId)) {
+            int currentCount = notificationCounts.get(userId);
+            if (currentCount > 0) {
+                notificationCounts.put(userId, currentCount - 1);
+            }
+        }
+
+        // 현재 알림 개수 전송
+        SseEmitter sseEmitter = NotificationController.sseEmitters.get(userId);
+        sseEmitter.send(SseEmitter.event().name("notificationCount").data(notificationCounts.get(userId)));
+
+        return new MsgResponseDto("알림이 삭제되었습니다.", HttpStatus.OK.value());
+    }*/
+
 
 }

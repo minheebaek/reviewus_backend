@@ -33,7 +33,7 @@ public class BoardEntity {
     public BoardEntity(PostBoardRequestDto dto, Long userId){
 
         Date now = Date.from(Instant.now());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String writeDatetime = simpleDateFormat.format(now);
 
         this.title = dto.getTitle();

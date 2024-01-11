@@ -41,9 +41,20 @@ public class ReviewService {
                 int betweenDays = (int) Duration.between(date1, date2).toDays();
                 log.info("betweenDays:" + betweenDays);
                 if (betweenDays == 1 || betweenDays == 8 || betweenDays == 38) {
+                    log.info(reviewNotifyEntity.getReadDate()+"getreadDate");
+                    if (reviewNotifyEntity.getReadDate().equals(endDate)) continue;
+                    reviewNotifyEntity.setReadDate(endDate);
+                    reviewNotifyRepository.save(reviewNotifyEntity);
+                    log.info(reviewNotifyEntity.getReadDate()+"getreadDate후");
+
                     List<BoardEntity> boardEntities = boardRepository.findByWriteDatetime(boardDate);
+                    log.info("boardEntities.size():"+boardEntities.size());
+
                     for (BoardEntity boardEntity : boardEntities) {
-                        notificationService.send(boardEntity, betweenDays);
+                        log.info(boardEntity.isAlarm()+"boardEntity.isAlarm()");
+                        if(boardEntity.isAlarm()) {
+                            notificationService.send(boardEntity, betweenDays);
+                        }
                     }
                 }
                 if (betweenDays >= 39) {
