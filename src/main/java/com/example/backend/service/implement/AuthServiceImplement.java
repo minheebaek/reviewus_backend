@@ -34,6 +34,8 @@ public class AuthServiceImplement implements AuthService {
     private final BoardTagMapRepository boardTagMapRepository;
     private final TagRepository tagRepository;
     private final GrassRepository grassRepository;
+    private final NotificationRepository notificationRepository;
+    private final ReviewNotifyRepository reviewNotifyRepository;
 
     @Override
     public ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId) {
@@ -56,6 +58,12 @@ public class AuthServiceImplement implements AuthService {
                 List<TagEntity> tagEntities=tagRepository.findByBoardNumber(boardEntity.getBoardNumber());
                 tagRepository.deleteAll(tagEntities);
             }
+            List<NotificationEntity> notificationEntities=notificationRepository.findByUserId(userId);
+            notificationRepository.deleteAll(notificationEntities);
+
+            List<ReviewNotifyEntity> reviewNotifyEntities=reviewNotifyRepository.findByUserId(userId);
+            reviewNotifyRepository.deleteAll(reviewNotifyEntities);
+
             boardRepository.deleteAll(boardEntities);
 
             userRepository.delete(userEntity);
