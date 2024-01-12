@@ -41,4 +41,7 @@ public class ReviewNotifyEntity {
     public void updateReviewNotify(ReviewNotifyEntity reviewNotifyEntity) {
         this.boardCount=reviewNotifyEntity.getBoardCount()+1;
     }
+    public void deleteReviewNotify(ReviewNotifyEntity reviewNotifyEntity){
+        this.boardCount=reviewNotifyEntity.getBoardCount()-1;
+    }
 }

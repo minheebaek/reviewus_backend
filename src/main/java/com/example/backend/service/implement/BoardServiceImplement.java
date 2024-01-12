@@ -38,6 +38,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardQueryRepository boardQueryRepository;
     private final GrassRepository grassRepository;
     private final ReviewNotifyRepository reviewNotifyRepository;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, String startDate, String endDate) {
@@ -163,9 +164,21 @@ public class BoardServiceImplement implements BoardService {
             boardTagMapRepository.deleteAll(boardTagMapEntities);
             tagEntities = tagRepository.findByBoardNumber(boardNumber);
             tagRepository.deleteAll(tagEntities);
+
+
+            ReviewNotifyEntity reviewNotifyEntity=reviewNotifyRepository.findByUserIdAndBoardDate(userId,boardEntity.getWriteDatetime());
+            reviewNotifyEntity.deleteReviewNotify(reviewNotifyEntity);
+            reviewNotifyRepository.save(reviewNotifyEntity);
+            if(reviewNotifyEntity.getBoardCount()==0) reviewNotifyRepository.delete(reviewNotifyEntity);
+
+            GrassEntity grassEntity=grassRepository.findByUserIdAndGrassDate(userId,boardEntity.getWriteDatetime());
+            grassEntity.deleteGrass(grassEntity);
+            grassRepository.save(grassEntity);
+            if(grassEntity.getPostCount()==0) grassRepository.delete(grassEntity);
+
+            List<NotificationEntity> notificationEntities=notificationRepository.findByBoardEntity(boardEntity);
+            notificationRepository.deleteAll(notificationEntities);
             boardRepository.delete(boardEntity);
-
-
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();

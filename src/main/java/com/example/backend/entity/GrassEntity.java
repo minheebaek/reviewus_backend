@@ -32,4 +32,7 @@ public class GrassEntity {
     public void updateGrass(GrassEntity grassEntity) {
         this.postCount = grassEntity.getPostCount() + 1;
     }
+    public void deleteGrass(GrassEntity grassEntity){
+        this.postCount = grassEntity.getPostCount() -1;
+    }
 }

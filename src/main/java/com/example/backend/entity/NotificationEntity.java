@@ -21,7 +21,6 @@ public class NotificationEntity {
     @Column(name = "user_id")
     private Long userId;
 /*    private String title;*/
-
 /*    private String contents;        // 복습 주기 알림 내용*/
 
    /* private String url;
