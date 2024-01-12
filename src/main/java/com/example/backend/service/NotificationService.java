@@ -2,11 +2,13 @@ package com.example.backend.service;
 
 
 import com.example.backend.controller.NotificationController;
+import com.example.backend.dto.response.notify.DeleteNotificationResponseDto;
 import com.example.backend.entity.BoardEntity;
 import com.example.backend.entity.NotificationEntity;
 import com.example.backend.repository.BoardRepository;
 import com.example.backend.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -50,6 +52,13 @@ public class NotificationService {
         if (NotificationController.sseEmitters.containsKey(userId)) {
             SseEmitter sseEmitter = NotificationController.sseEmitters.get(userId);
             try {
+                // DB 저장
+                NotificationEntity notificationEntity = new NotificationEntity();
+
+                notificationEntity.setUserId(userId);
+                notificationEntity.setBoardEntity(boardEntity);         // post 필드 설정
+                notificationRepository.save(notificationEntity);
+
                 Map<String, String> eventData = new HashMap<>();
                 eventData.put("title", boardEntity.getTitle());
                 if(betweenDays==8||betweenDays==38){
@@ -57,16 +66,12 @@ public class NotificationService {
                 }
                 eventData.put("content",betweenDays+"일 전에 공부 했던 내용을 다시 학습 해 보세요!");
                 eventData.put("boardNumber", String.valueOf(boardEntity.getBoardNumber()));
+                eventData.put("notification_id", String.valueOf(notificationEntity.getNotifyId()));
 
 
                 sseEmitter.send(SseEmitter.event().name("addComment").data(eventData));
 
-                // DB 저장
-                NotificationEntity notificationEntity = new NotificationEntity();
 
-                notificationEntity.setUserId(userId);
-                notificationEntity.setBoardEntity(boardEntity);         // post 필드 설정
-                notificationRepository.save(notificationEntity);
 
                 // 알림 개수 증가
                 notificationCounts.put(userId, notificationCounts.getOrDefault(userId, 0) + 1);
@@ -80,15 +85,15 @@ public class NotificationService {
         }
     }
 
-    /*// 알림 삭제
-    public MsgResponseDto deleteNotification(Long id) throws IOException {
-        Notification notification = notificationRepository.findById(id).orElseThrow(
+    // 알림 삭제
+    public ResponseEntity<? super DeleteNotificationResponseDto> deleteNotification(Long id) throws IOException {
+        NotificationEntity notificationEntity = notificationRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("알림을 찾을 수 없습니다.")
         );
 
-        Long userId = notification.getPost().getUser().getId();
+        Long userId = notificationEntity.getUserId();
 
-        notificationRepository.delete(notification);
+        notificationRepository.delete(notificationEntity);
 
         // 알림 개수 감소
         if (notificationCounts.containsKey(userId)) {
@@ -102,8 +107,8 @@ public class NotificationService {
         SseEmitter sseEmitter = NotificationController.sseEmitters.get(userId);
         sseEmitter.send(SseEmitter.event().name("notificationCount").data(notificationCounts.get(userId)));
 
-        return new MsgResponseDto("알림이 삭제되었습니다.", HttpStatus.OK.value());
-    }*/
+        return DeleteNotificationResponseDto.success();
+    }
 
 
 }

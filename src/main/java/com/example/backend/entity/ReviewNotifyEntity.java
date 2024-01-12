@@ -18,7 +18,7 @@ public class ReviewNotifyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notify_id")
+    @Column(name = "reviewnotify_id")
     private Long notifyId;
 
     @Column(name = "board_date")
