@@ -283,7 +283,6 @@ public class BoardServiceImplement implements BoardService {
             boardTagMapRepository.saveAll(boardTagMapEntities);
 
             LocalDate date = LocalDate.now();
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String localDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             GrassEntity grassEntity = grassRepository.findByUserIdAndGrassDate(userId, localDate);
             if (grassEntity == null) {
