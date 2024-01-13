@@ -5,7 +5,6 @@ import com.example.backend.controller.NotificationController;
 import com.example.backend.dto.response.notify.DeleteNotificationResponseDto;
 import com.example.backend.entity.BoardEntity;
 import com.example.backend.entity.NotificationEntity;
-import com.example.backend.repository.BoardRepository;
 import com.example.backend.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +13,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ import java.util.Map;
 public class NotificationService {
     private static Map<Long, Integer> notificationCounts = new HashMap<>();     // 알림 개수 저장
     private final NotificationRepository notificationRepository;
-    private final BoardRepository boardRepository;
+
     public SseEmitter subscribe(Long userId) {
 
         // 현재 클라이언트를 위한 SseEmitter 생성
@@ -31,7 +32,7 @@ public class NotificationService {
             // 연결!!
             sseEmitter.send(SseEmitter.event().name("connect"));
         } catch (IOException exception) {
-            exception.printStackTrace();
+
         }
 
         // user의 pk값을 key값으로 해서 SseEmitter를 저장
@@ -41,7 +42,24 @@ public class NotificationService {
         sseEmitter.onTimeout(() -> NotificationController.sseEmitters.remove(userId));
         sseEmitter.onError((e) -> NotificationController.sseEmitters.remove(userId));
 
+        LocalDate date = LocalDate.now();
+        String localDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        // 503 에러를 방지하기 위한 더미 이벤트 전송
+        sendToClient(sseEmitter, "REVIEWUS와 " + localDate + " 복습을 시작하세요!");
+
         return sseEmitter;
+    }
+
+    private void sendToClient(SseEmitter emitter, Object data) {
+        try {
+            emitter.send(SseEmitter.event()
+                    .name("first sse")
+                    .data(data));
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            throw new RuntimeException("연결 오류!");
+        }
     }
 
 
