@@ -9,13 +9,14 @@ import org.springframework.http.ResponseEntity;
 
 @Getter
 public class DeleteLogoutDto extends ResponseDto {
-
-    private DeleteLogoutDto(){
+    private String oauthAccessToken;
+    private DeleteLogoutDto(String oauthAccessToken){
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
+        this.oauthAccessToken = oauthAccessToken;
     }
 
-    public static ResponseEntity<DeleteLogoutDto> success(){
-        DeleteLogoutDto result = new DeleteLogoutDto();
+    public static ResponseEntity<DeleteLogoutDto> success(String oauthAccessToken){
+        DeleteLogoutDto result = new DeleteLogoutDto(oauthAccessToken);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     public static ResponseEntity<ResponseDto> notAuthorization(){

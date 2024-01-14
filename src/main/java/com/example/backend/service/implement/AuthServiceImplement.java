@@ -183,16 +183,21 @@ public class AuthServiceImplement implements AuthService {
      */
     @Override
     public ResponseEntity<? super DeleteLogoutDto> logout(RefreshTokenDto dto) {
+        String oauthAccessToken=null;
         try {
             RefreshToken refreshToken = refreshTokenRepository.findByValue(dto.getRefreshToken());
             if (refreshToken == null) return DeleteLogoutDto.notAuthorization();
             refreshTokenRepository.delete(refreshToken);
+            UserEntity userEntity = userRepository.findByUserId(refreshToken.getUserId());
+            if(userEntity.getPassword()==null){
+                oauthAccessToken=redisService.getData(userEntity.getEmail());
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
 
-        return DeleteLogoutDto.success();
+        return DeleteLogoutDto.success(oauthAccessToken);
     }
 
     /**
