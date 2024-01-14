@@ -5,7 +5,7 @@ import com.example.backend.dto.request.auth.PatchChangePasswdRequestDto;
 import com.example.backend.dto.response.auth.*;
 import com.example.backend.dto.request.auth.SignInRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
-import com.example.backend.dto.response.user.DeleteUserResponseDto;
+import com.example.backend.dto.response.auth.DeleteUserResponseDto;
 import com.example.backend.service.AuthService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;

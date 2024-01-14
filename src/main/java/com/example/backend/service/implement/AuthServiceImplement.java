@@ -5,23 +5,24 @@ import com.example.backend.dto.request.auth.PatchChangePasswdRequestDto;
 import com.example.backend.dto.request.auth.SignInRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
 import com.example.backend.dto.response.ResponseDto;
-import com.example.backend.dto.response.auth.DeleteLogoutDto;
-import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
-import com.example.backend.dto.response.auth.SignInResponseDto;
-import com.example.backend.dto.response.auth.SignUpResponseDto;
-import com.example.backend.dto.response.user.DeleteUserResponseDto;
+import com.example.backend.dto.response.auth.*;
+import com.example.backend.dto.response.auth.DeleteUserResponseDto;
 import com.example.backend.entity.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.AuthService;
+import com.example.backend.service.RedisService;
 import com.example.backend.util.JwtTokenizer;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,31 @@ public class AuthServiceImplement implements AuthService {
     private final GrassRepository grassRepository;
     private final NotificationRepository notificationRepository;
     private final ReviewNotifyRepository reviewNotifyRepository;
+    private final RedisService redisService;
+
+    private final String GOOGLE_REVOKE_URL = "https://oauth2.googleapis.com/revoke";
+
+    @Override
+    public String deleteOAuthUser(UserEntity userEntity) {
+
+        String accessToken = redisService.getData(userEntity.getEmail());
+
+        if (accessToken == null) return "ExpiredToken";
+
+        RestTemplate restTemplate = new RestTemplate();
+        Map<String, String> params = new HashMap<>();
+
+        params.put("token", accessToken);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(GOOGLE_REVOKE_URL, params, String.class);
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            redisService.deleteData(userEntity.getEmail());
+
+        }else {
+            return "Fail";
+        }
+        return "Success";
+    }
+
 
     @Override
     public ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId) {
@@ -44,24 +70,32 @@ public class AuthServiceImplement implements AuthService {
             userEntity = userRepository.findByUserId(userId);
             if (userEntity == null) return DeleteUserResponseDto.notExistUser();
 
-            List<RefreshToken> refreshTokens =refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
-            refreshTokenRepository.deleteAll(refreshTokens);
-
+            if (userEntity.getPassword() != null) {
+                List<RefreshToken> refreshTokens = refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
+                refreshTokenRepository.deleteAll(refreshTokens);
+            }
+            String oAuthUserresult = deleteOAuthUser(userEntity);
+            if(oAuthUserresult=="ExpiredToken"){
+                return DeleteUserResponseDto.expiredToken();
+            }
+            if(oAuthUserresult=="Fail"){
+                return ResponseDto.databaseError();
+            }
             List<GrassEntity> grassEntities = grassRepository.findByUserId(userId);
             grassRepository.deleteAll(grassEntities);
 
             List<BoardEntity> boardEntities = boardRepository.findByUserId(userId);
-            for(BoardEntity boardEntity : boardEntities){
-                List<BoardTagMapEntity> boardTagMapEntities=boardTagMapRepository.findByBoardEntity(boardEntity);
+            for (BoardEntity boardEntity : boardEntities) {
+                List<BoardTagMapEntity> boardTagMapEntities = boardTagMapRepository.findByBoardEntity(boardEntity);
                 boardTagMapRepository.deleteAll(boardTagMapEntities);
 
-                List<TagEntity> tagEntities=tagRepository.findByBoardNumber(boardEntity.getBoardNumber());
+                List<TagEntity> tagEntities = tagRepository.findByBoardNumber(boardEntity.getBoardNumber());
                 tagRepository.deleteAll(tagEntities);
             }
-            List<NotificationEntity> notificationEntities=notificationRepository.findByUserId(userId);
+            List<NotificationEntity> notificationEntities = notificationRepository.findByUserId(userId);
             notificationRepository.deleteAll(notificationEntities);
 
-            List<ReviewNotifyEntity> reviewNotifyEntities=reviewNotifyRepository.findByUserId(userId);
+            List<ReviewNotifyEntity> reviewNotifyEntities = reviewNotifyRepository.findByUserId(userId);
             reviewNotifyRepository.deleteAll(reviewNotifyEntities);
 
             boardRepository.deleteAll(boardEntities);
@@ -77,17 +111,17 @@ public class AuthServiceImplement implements AuthService {
     @Override
     public ResponseEntity<? super PatchChangePasswdResponseDto> changePasswd(Long userId, PatchChangePasswdRequestDto dto) {
         UserEntity userEntity = null;
-        List<RefreshToken> refreshTokens =null;
-        try{
+        List<RefreshToken> refreshTokens = null;
+        try {
             userEntity = userRepository.findByUserId(userId);
-            if(userEntity==null) return PatchChangePasswdResponseDto.notExistUser();
+            if (userEntity == null) return PatchChangePasswdResponseDto.notExistUser();
 
             //1.현재 비밀번호 맞는지 체크
-            if(!passwordEncoder.matches(dto.getCurrentPasswd(),userEntity.getPassword()))
-            return PatchChangePasswdResponseDto.mismatchCurrentPasswd();
+            if (!passwordEncoder.matches(dto.getCurrentPasswd(), userEntity.getPassword()))
+                return PatchChangePasswdResponseDto.mismatchCurrentPasswd();
 
             //2.새 비밀번호, 새 비밀번호 확인 맞는지 체크
-            if(dto.getNewPasswd().equals(dto.getCheckPasswd())==false)
+            if (dto.getNewPasswd().equals(dto.getCheckPasswd()) == false)
                 return PatchChangePasswdResponseDto.mismatchNewPasswd();
 
             //3.DB 비밀번호 변경
@@ -97,13 +131,13 @@ public class AuthServiceImplement implements AuthService {
             userRepository.save(userEntity);
 
             //4.비밀번호 변경 성공 시 로그아웃
-            refreshTokens=refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
-            for(RefreshToken refreshToken : refreshTokens){
+            refreshTokens = refreshTokenRepository.findByUserIdOrderByIdDesc(userId);
+            for (RefreshToken refreshToken : refreshTokens) {
                 refreshTokenRepository.delete(refreshToken);
                 break;
             }
 
-        }catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
 
         }
@@ -151,9 +185,9 @@ public class AuthServiceImplement implements AuthService {
     public ResponseEntity<? super DeleteLogoutDto> logout(RefreshTokenDto dto) {
         try {
             RefreshToken refreshToken = refreshTokenRepository.findByValue(dto.getRefreshToken());
-            if(refreshToken == null) return DeleteLogoutDto.notAuthorization();
+            if (refreshToken == null) return DeleteLogoutDto.notAuthorization();
             refreshTokenRepository.delete(refreshToken);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
@@ -195,7 +229,6 @@ public class AuthServiceImplement implements AuthService {
         return SignInResponseDto.success(accessToken, refreshToken, userEntity);
 
     }
-
 
 
     /**

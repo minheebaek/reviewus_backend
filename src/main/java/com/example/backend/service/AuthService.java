@@ -4,14 +4,13 @@ import com.example.backend.dto.RefreshTokenDto;
 import com.example.backend.dto.request.auth.PatchChangePasswdRequestDto;
 import com.example.backend.dto.request.auth.SignInRequestDto;
 import com.example.backend.dto.request.auth.SignUpRequestDto;
-import com.example.backend.dto.response.auth.PatchChangePasswdResponseDto;
-import com.example.backend.dto.response.auth.SignInResponseDto;
-import com.example.backend.dto.response.auth.SignUpResponseDto;
-import com.example.backend.dto.response.auth.DeleteLogoutDto;
-import com.example.backend.dto.response.user.DeleteUserResponseDto;
+import com.example.backend.dto.response.auth.*;
+import com.example.backend.dto.response.auth.DeleteUserResponseDto;
+import com.example.backend.entity.UserEntity;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
+    String deleteOAuthUser(UserEntity userEntity);
     ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId);
 
     ResponseEntity<? super PatchChangePasswdResponseDto> changePasswd(Long userId, PatchChangePasswdRequestDto dto);

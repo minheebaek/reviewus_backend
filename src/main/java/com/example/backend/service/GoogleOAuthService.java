@@ -5,6 +5,7 @@ import com.example.backend.dto.request.OAuth.PostOAuthSigninRequestDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class GoogleOAuthService {
     private final ObjectMapper objectMapper;
     RestTemplate restTemplate = new RestTemplate();
@@ -44,7 +46,7 @@ public class GoogleOAuthService {
         params.put("grant_type", "authorization_code");
 
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(GOOGLE_TOKEN_URL, params, String.class);
-
+        log.info(responseEntity.getStatusCode()+"= responseEntity.getStatusCode()");
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return responseEntity;
         }
@@ -71,4 +73,5 @@ public class GoogleOAuthService {
     public PostOAuthSigninRequestDto getUserInfo(ResponseEntity<String> userInfoResponse) throws JsonProcessingException {
         return objectMapper.readValue(userInfoResponse.getBody(), PostOAuthSigninRequestDto.class);
     }
+
 }
