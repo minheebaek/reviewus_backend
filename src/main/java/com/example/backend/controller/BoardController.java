@@ -2,15 +2,12 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.board.PatchBoardRequestDto;
 import com.example.backend.dto.request.board.PostBoardRequestDto;
-import com.example.backend.dto.object.BoardResponseDto;
 import com.example.backend.dto.response.board.*;
 import com.example.backend.service.BoardService;
 import com.example.backend.util.IfLogin;
 import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +58,7 @@ public class BoardController {
         ResponseEntity<? super GetNoOffsetResponseDto> result=boardService.findUserIdAndBoardByCreatedAtDesc(lastBoardNumber,pageable,searchWord,loginUserDto);
         return result;
     }
+
     /**
      * 특정 유저 검색 게시글 불러오기
      * localhost:8080/mystudy/search-list/{searchWord}
@@ -92,6 +90,7 @@ public class BoardController {
         ResponseEntity<? super GetUserBoardListResponseDto> response = boardService.getUserBoardList(loginUserDto.getUserId());
         return response;
     }
+
     /**
      * 게시글 삭제
      * localhost:8080/mystudy/{boardNumber}
@@ -101,11 +100,11 @@ public class BoardController {
      * @return response
      */
     @DeleteMapping("/{boardNumber}")
-    public ResponseEntity<?> deleteBoard(
+    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(
             @PathVariable ("boardNumber") Integer boardNumber,
             @IfLogin LoginUserDto loginUserDto
     ){
-        ResponseEntity<?> response = boardService.deleteBoard(boardNumber, loginUserDto.getUserId());
+        ResponseEntity<? super DeleteBoardResponseDto> response = boardService.deleteBoard(boardNumber, loginUserDto.getUserId());
         return response;
     }
 

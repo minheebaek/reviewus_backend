@@ -178,29 +178,26 @@ public class BoardServiceImplement implements BoardService {
      *
      * @parm boardNumber
      * @parm userId
-     * @return ResponseEntity<?>
+     * @return ResponseEntity<? super DeleteBoardResponseDto>
      */
     @Override
-    public ResponseEntity<?> deleteBoard(Integer boardNumber, Long userId) {
+    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardNumber, Long userId) {
         BoardEntity boardEntity = null;
         List<TagEntity> tagEntities = new ArrayList<>();
         List<BoardTagMapEntity> boardTagMapEntities = new ArrayList<>();
         try {
             boolean existedEmail = userRepository.existsByUserId(userId);
             if (!existedEmail) {
-                ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_USER, ResponseMessage.NOT_EXISTED_USER);
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+                return DeleteBoardResponseDto.notExistedUser();
             }
 
             boardEntity = boardRepository.findByBoardNumber(boardNumber);
             if (boardEntity == null) {
-                ResponseDto result = new ResponseDto(ResponseCode.NOT_EXISTED_BOARD, ResponseMessage.NOT_EXISTED_BOARD);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+                return DeleteBoardResponseDto.notExistedBoard();
             }
 
             if (!boardEntity.getUserId().equals(userId)) {
-                ResponseDto result = new ResponseDto(ResponseCode.NO_PERMISSION, ResponseMessage.NO_PERMISSION);
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
+                return DeleteBoardResponseDto.noPermission();
             }
             boardTagMapEntities = boardTagMapRepository.findByBoardEntity(boardEntity);
             boardTagMapRepository.deleteAll(boardTagMapEntities);
@@ -225,8 +222,7 @@ public class BoardServiceImplement implements BoardService {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
-        ResponseDto result = new ResponseDto(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return DeleteBoardResponseDto.success();
     }
 
     /**
