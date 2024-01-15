@@ -25,6 +25,12 @@ public class ReviewService {
     private final NotificationService notificationService;
     private final BoardRepository boardRepository;
 
+    /**
+     * notify
+     *
+     * @param userId
+     * @return ResponseEntity<? super ReviewNotifyResponseDto>
+     */
     public ResponseEntity<? super ReviewNotifyResponseDto> notify(Long userId) {
         try {
             log.info(userId + "userId");

@@ -41,6 +41,12 @@ public class AuthServiceImplement implements AuthService {
 
     private final String GOOGLE_REVOKE_URL = "https://oauth2.googleapis.com/revoke";
 
+    /**
+     * deleteOAuthUser
+     *
+     * @parm userEntity
+     * @return String
+     */
     @Override
     public String deleteOAuthUser(UserEntity userEntity) {
 
@@ -62,7 +68,12 @@ public class AuthServiceImplement implements AuthService {
         return "Success";
     }
 
-
+    /**
+     * deleteUser
+     *
+     * @parm userId
+     * @return ResponseEntity<? super DeleteUserResponseDto>
+     */
     @Override
     public ResponseEntity<? super DeleteUserResponseDto> deleteUser(Long userId) {
         UserEntity userEntity = null;
@@ -108,6 +119,13 @@ public class AuthServiceImplement implements AuthService {
         return DeleteUserResponseDto.success();
     }
 
+    /**
+     * changePasswd
+     *
+     * @parm userId
+     * @parm dto
+     * @return ResponseEntity<? super SignUpResponseDto>
+     */
     @Override
     public ResponseEntity<? super PatchChangePasswdResponseDto> changePasswd(Long userId, PatchChangePasswdRequestDto dto) {
         UserEntity userEntity = null;
@@ -145,7 +163,7 @@ public class AuthServiceImplement implements AuthService {
     }
 
     /**
-     * refreshToken 재발급
+     * refreshToken
      *
      * @return ResponseEntity<? super SignInResponseDto>
      * @parm dto

@@ -24,6 +24,12 @@ public class NotificationService {
     private static Map<Long, Integer> notificationCounts = new HashMap<>();     // 알림 개수 저장
     private final NotificationRepository notificationRepository;
 
+    /**
+     * subscribe
+     *
+     * @parm userId
+     * @return SseEmitter
+     */
     public SseEmitter subscribe(Long userId) {
 
         // 현재 클라이언트를 위한 SseEmitter 생성
@@ -51,6 +57,13 @@ public class NotificationService {
         return sseEmitter;
     }
 
+    /**
+     * sendToClient
+     *
+     * @parm emitter
+     * @parm data
+     * @return void
+     */
     private void sendToClient(SseEmitter emitter, Object data) {
         try {
             emitter.send(SseEmitter.event()
@@ -62,7 +75,13 @@ public class NotificationService {
         }
     }
 
-
+    /**
+     * send
+     *
+     * @parm boardEntity
+     * @parm betweenDays
+     * @return void
+     */
     public void send(BoardEntity boardEntity, int betweenDays) {
 
         Long userId =boardEntity.getUserId();
@@ -103,7 +122,12 @@ public class NotificationService {
         }
     }
 
-    // 알림 삭제
+    /**
+     * deleteNotification
+     *
+     * @parm id
+     * @return ResponseEntity<? super DeleteNotificationResponseDto>
+     */
     public ResponseEntity<? super DeleteNotificationResponseDto> deleteNotification(Long id) throws IOException {
         NotificationEntity notificationEntity = notificationRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("알림을 찾을 수 없습니다.")

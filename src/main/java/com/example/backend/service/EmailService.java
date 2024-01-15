@@ -29,6 +29,13 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String id;
 
+    /**
+     * createMessage
+     *
+     * @parm to
+     * @parm ePw
+     * @return MimeMessage
+     */
     public MimeMessage createMessage(String to, String ePw) throws MessagingException, UnsupportedEncodingException {
         log.info("보내는 대상 : " + to);
         log.info("인증 번호 : " + ePw);
@@ -51,6 +58,11 @@ public class EmailService {
         return message;
     }
 
+    /**
+     * createKey
+     *
+     * @return String
+     */
     // 인증코드 만들기
     public static String createKey() {
         log.info("createKey 실행");
@@ -70,6 +82,13 @@ public class EmailService {
         MimeMessage 객체 안에 내가 전송할 메일의 내용을 담아준다.
         bean으로 등록해둔 javaMailSender 객체를 사용하여 이메일 send
      */
+
+    /**
+     * sendSimpleMessage
+     *
+     * @parm to
+     * @return ResponseEntity<? super PostFindPassWdResponsetDto>
+     */
     public ResponseEntity<? super PostFindPassWdResponsetDto> sendSimpleMessage(String to) throws Exception {
         String ePw = createKey();
         MimeMessage message = createMessage(to, ePw);
@@ -83,6 +102,12 @@ public class EmailService {
         return PostFindPassWdResponsetDto.success();
     }
 
+    /**
+     * verifyEmail
+     *
+     * @parm key
+     * @return ResponseEntity<? super GetFindPassWdVerifyResponseDto>
+     */
     public ResponseEntity<? super GetFindPassWdVerifyResponseDto> verifyEmail(String key) throws ChangeSetPersister.NotFoundException {
         String memberEmail = redisService.getData(key);
         if (memberEmail == null) {

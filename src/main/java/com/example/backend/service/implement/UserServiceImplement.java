@@ -26,6 +26,12 @@ public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    /**
+     * changePassWd
+     *
+     * @parm dto
+     * @return ResponseEntity<? super PutChangePassWdResponseDto>
+     */
     @Override
     public ResponseEntity<? super PutChangePassWdResponseDto> changePassWd(PutChangePassWdRequestDto dto) {
         try{
@@ -44,6 +50,12 @@ public class UserServiceImplement implements UserService {
         return PutChangePassWdResponseDto.success();
     }
 
+    /**
+     * verifyId
+     *
+     * @parm dto
+     * @return ResponseEntity<? super PostFindPassWdVerifyIdResponseDto>
+     */
     @Override
     public ResponseEntity<? super PostFindPassWdVerifyIdResponseDto> verifyId(PostFindPassWdVerifyIdRequestDto dto) {
         String email = null;
@@ -58,6 +70,13 @@ public class UserServiceImplement implements UserService {
         return PostFindPassWdVerifyIdResponseDto.success(email);
     }
 
+    /**
+     * patchChangeNickname
+     *
+     * @parm dto
+     * @parm userId
+     * @return ResponseEntity<? super PatchChangeNicknameResponseDto>
+     */
     @Transactional
     @Override
     public ResponseEntity<? super PatchChangeNicknameResponseDto> patchChangeNickname(PatchChangeNicknameRequestDto dto, Long userId) {
@@ -78,6 +97,12 @@ public class UserServiceImplement implements UserService {
         return PatchChangeNicknameResponseDto.success();
     }
 
+    /**
+     * GetUserProfileInfoResponse
+     *
+     * @parm userId
+     * @return ResponseEntity<? super GetUserProfileInfoResponse>
+     */
     @Override
     public ResponseEntity<? super GetUserProfileInfoResponse> getUserProfileInfo(Long userId) {
         UserEntity userEntity = null;
@@ -92,6 +117,12 @@ public class UserServiceImplement implements UserService {
         return GetUserProfileInfoResponse.success(userEntity);
     }
 
+    /**
+     * GetUserProfileMainResponseDto
+     *
+     * @parm userId
+     * @return ResponseEntity<? super GetUserProfileMainResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetUserProfileMainResponseDto> getUserProfileMain(Long userId) {
         UserEntity userEntity = null;
@@ -106,6 +137,12 @@ public class UserServiceImplement implements UserService {
         return GetUserProfileMainResponseDto.success(userEntity);
     }
 
+    /**
+     * GetSignInUserResponseDto
+     *
+     * @parm email
+     * @return ResponseEntity<? super GetSignInUserResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetSignInUserResponseDto> getSignInUser(String email) {
         UserEntity userEntity = null;

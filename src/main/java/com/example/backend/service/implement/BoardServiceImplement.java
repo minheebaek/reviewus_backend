@@ -12,7 +12,6 @@ import com.example.backend.dto.response.board.*;
 import com.example.backend.entity.*;
 import com.example.backend.repository.*;
 import com.example.backend.service.BoardService;
-import com.example.backend.service.NotificationService;
 import com.example.backend.util.LoginUserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +39,14 @@ public class BoardServiceImplement implements BoardService {
     private final ReviewNotifyRepository reviewNotifyRepository;
     private final NotificationRepository notificationRepository;
 
+    /**
+     * getGrassList
+     *
+     * @parm userId
+     * @parm startDate
+     * @parm endDate
+     * @return ResponseEntity<? super GetGrassResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetGrassResponseDto> getGrassList(Long userId, String startDate, String endDate) {
         List<GrassItemDto> grassList = new ArrayList<>();
@@ -58,6 +65,15 @@ public class BoardServiceImplement implements BoardService {
         return GetGrassResponseDto.success(grassList);
     }
 
+    /**
+     * findUserIdAndBoardByCreatedAtDesc
+     *
+     * @parm lastBoardNumber
+     * @parm pageable
+     * @parm searchWord
+     * @parm loginUserDto
+     * @return ResponseEntity<? super GetNoOffsetResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetNoOffsetResponseDto> findUserIdAndBoardByCreatedAtDesc(Long lastBoardNumber, Pageable pageable, String searchWord, LoginUserDto loginUserDto) {
         UserEntity userEntity = null;
@@ -73,6 +89,12 @@ public class BoardServiceImplement implements BoardService {
         return GetNoOffsetResponseDto.success(boardResponseDtos);
     }
 
+    /**
+     * getLatestBoardList
+     *
+     * @parm userId
+     * @return ResponseEntity<? super GetLatestBoardListResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList(Long userId) {
         List<BoardEntity> boardEntities = new ArrayList<>();
@@ -104,6 +126,13 @@ public class BoardServiceImplement implements BoardService {
         return GetLatestBoardListResponseDto.success(boardLatestListItems);
     }
 
+    /**
+     * getSearchBoardList
+     *
+     * @parm searchWord
+     * @parm userId
+     * @return ResponseEntity<? super GetSearchBoardListResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, Long userId) {
         List<BoardEntity> boardEntities = new ArrayList<>();
@@ -121,6 +150,12 @@ public class BoardServiceImplement implements BoardService {
         return GetSearchBoardListResponseDto.success(boardEntities);
     }
 
+    /**
+     * getUserBoardList
+     *
+     * @parm userId
+     * @return ResponseEntity<? super GetUserBoardListResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(Long userId) {
         List<BoardEntity> BoardEntities = new ArrayList<>();
@@ -138,6 +173,13 @@ public class BoardServiceImplement implements BoardService {
         return GetUserBoardListResponseDto.success(BoardEntities);
     }
 
+    /**
+     * deleteBoard
+     *
+     * @parm boardNumber
+     * @parm userId
+     * @return ResponseEntity<?>
+     */
     @Override
     public ResponseEntity<?> deleteBoard(Integer boardNumber, Long userId) {
         BoardEntity boardEntity = null;
@@ -187,6 +229,14 @@ public class BoardServiceImplement implements BoardService {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    /**
+     * patchBoard
+     *
+     * @parm dto
+     * @parm boardNumber
+     * @parm userId
+     * @return ResponseEntity<? super PatchBoardResponseDto>
+     */
     @Override
     public ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardNumber, Long userId) {
         BoardEntity boardEntity = null;
@@ -232,6 +282,13 @@ public class BoardServiceImplement implements BoardService {
         return PatchBoardResponseDto.success();
     }
 
+    /**
+     * postBoard
+     *
+     * @parm boardNumber
+     * @parm userId
+     * @return ResponseEntity<? super GetBoardResponseDto>
+     */
     @Override
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber, Long userId) {
         BoardEntity boardEntity = null;
@@ -255,6 +312,13 @@ public class BoardServiceImplement implements BoardService {
         return GetBoardResponseDto.success(boardEntity, tagEntities);
     }
 
+    /**
+     * postBoard
+     *
+     * @parm dto
+     * @parm userId
+     * @return ResponseEntity<? super PostBoardResponseDto>
+     */
     @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, Long userId) {
         try {

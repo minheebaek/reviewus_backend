@@ -12,19 +12,37 @@ import java.time.Duration;
 public class RedisService {
     private final StringRedisTemplate stringRedisTemplate;
 
-    // key를 통해 value 리턴
-    public String getData(String key) {
+    /**
+     * getData
+     *
+     * @parm key
+     * @return String
+     */
+    public String getData(String key) {    // key를 통해 value 리턴
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
         return valueOperations.get(key);
     }
 
-    // 유효 시간 동안(key, value)저장
-    public void setDataExpire(String key, String value, long duration) {
+    /**
+     * setDataExpire
+     *
+     * @parm key
+     * @parm value
+     * @parm duration
+     * @return void
+     */
+    public void setDataExpire(String key, String value, long duration) {// 유효 시간 동안(key, value)저장
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
         Duration expireDuration = Duration.ofSeconds(duration);
         valueOperations.set(key, value, expireDuration);
     }
 
+    /**
+     * deleteData
+     *
+     * @parm key
+     * @return void
+     */
     public void deleteData(String key) {
         stringRedisTemplate.delete(key);
     }

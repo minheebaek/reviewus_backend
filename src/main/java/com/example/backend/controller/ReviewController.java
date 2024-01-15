@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReviewController {
     private final ReviewService reviewService;
 
+    /**
+     * 알림 발송
+     * localhost:8080/reviewnotify/send
+     *
+     * @parm loginUserDto
+     * @return response
+     */
     @GetMapping("/send")
     public ResponseEntity<? super ReviewNotifyResponseDto> reviewNotifySend(@IfLogin LoginUserDto loginUserDto){
         ResponseEntity<? super ReviewNotifyResponseDto> response = reviewService.notify(loginUserDto.getUserId());

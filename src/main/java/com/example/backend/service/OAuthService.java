@@ -45,7 +45,12 @@ public class OAuthService {
                 + "access_type=offline";
     }
 
-
+    /**
+     * OAuthLogin
+     *
+     * @parm requestBody
+     * @return ResponseEntity<? super PostOAuthSigninResponseDto>
+     */
     public ResponseEntity<? super PostOAuthSigninResponseDto> OAuthLogin(String requestBody) throws JsonProcessingException {
         //1.code로 json 형식의 응답객체를 받아옴
          ResponseEntity<String> accessTokenResponse=googleOAuthService.requestGoogleAccessToken(requestBody);

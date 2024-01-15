@@ -22,12 +22,25 @@ public class NotificationController {
 
     public static Map<Long, SseEmitter> sseEmitters = new ConcurrentHashMap<>();
 
+    /**
+     * 알림 연결
+     * localhost:8080/notifications/subscribe
+     *
+     * @parm loginUserDto
+     * @return response
+     */
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     public ResponseEntity<SseEmitter> subscribe(@IfLogin LoginUserDto loginUserDto){
         return ResponseEntity.ok(notificationService.subscribe(loginUserDto.getUserId()));
     }
 
-
+    /**
+     * 알림 삭제
+     * localhost:8080/notifications/api/notification/delete/{id}
+     *
+     * @parm id
+     * @return response
+     */
     @DeleteMapping("/api/notification/delete/{id}")
     public ResponseEntity<? super DeleteNotificationResponseDto> deleteNotification(@PathVariable Long id) throws IOException {
         ResponseEntity<? super DeleteNotificationResponseDto> response = notificationService.deleteNotification(id);

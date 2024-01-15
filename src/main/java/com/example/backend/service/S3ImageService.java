@@ -30,8 +30,16 @@ public class S3ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    //  multipartFile을 전달받아 file로 전환한 후 s3에 업로드
-    public ResponseEntity<? super PutUserInfoImageResponseDto> uploadImage(Long userId, MultipartFile multipartFile, String dirName) {
+
+    /**
+     * uploadImage
+     *
+     * @param userId
+     * @param multipartFile
+     * @param dirName
+     * @return ResponseEntity<? super PutUserInfoImageResponseDto>
+     */
+    public ResponseEntity<? super PutUserInfoImageResponseDto> uploadImage(Long userId, MultipartFile multipartFile, String dirName) { //  multipartFile을 전달받아 file로 전환한 후 s3에 업로드
         UserEntity userEntity = null;
         String profileImage = null;
         try {
@@ -52,6 +60,13 @@ public class S3ImageService {
         return PutUserInfoImageResponseDto.success();
     }
 
+    /**
+     * upload
+     *
+     * @param uploadFile
+     * @param dirName
+     * @return String
+     */
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + UUID.randomUUID() + "." + uploadFile.getName();
         String uploadImageUrl = putS3(uploadFile, fileName);
@@ -61,8 +76,14 @@ public class S3ImageService {
     }
 
 
-    //s3 버킷에 이미지 업로드
-    private String putS3(File uploadFile, String fileName) {
+    /**
+     * putS3
+     *
+     * @param uploadFile
+     * @param fileName
+     * @return String
+     */
+    private String putS3(File uploadFile, String fileName) { //s3 버킷에 이미지 업로드
         amazonS3Client.putObject(
                 new PutObjectRequest(bucket, fileName, uploadFile)
                         .withCannedAcl(CannedAccessControlList.PublicRead) //publicRead 권한으로 업로드
@@ -71,8 +92,12 @@ public class S3ImageService {
                 .toString();
     }
 
-    //로컬에 있는 이미지 삭제
-    private void removeNewFile(File targetFile) {
+    /**
+     * removeNewFile
+     *
+     * @param targetFile
+     */
+    private void removeNewFile(File targetFile) { //로컬에 있는 이미지 삭제
         if (targetFile.delete()) {
             log.info("파일이 삭제되었습니다.");
         } else {
@@ -80,8 +105,14 @@ public class S3ImageService {
         }
     }
 
-    //로컬에 파일 업로드하기
-    private File convert(MultipartFile file) throws IOException {
+    /**
+     * convert
+     *
+     * @param file
+     * @return File
+     * @throws IOException
+     */
+    private File convert(MultipartFile file) throws IOException { //로컬에 파일 업로드하기
         // 해당 객체는 프로그램이 실행되는 로컬 디렉토리(루트 디렉토리)에 위치하게 됨
         File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
         // File convertFile = new File(file.getOriginalFilename());
@@ -96,13 +127,23 @@ public class S3ImageService {
 
     }
 
-    // find image from s3
-    public String getThumbnailPath(String path) {
+
+    /**
+     * getThumbnailPath
+     *
+     * @param path
+     * @return String
+     */
+    public String getThumbnailPath(String path) { // find image from s3
         return amazonS3Client.getUrl(bucket, path).toString();
     }
 
-    //remove s3 object
-    public void deleteFile(String fileName) {
+    /**
+     * deleteFile
+     *
+     * @param fileName
+     */
+    public void deleteFile(String fileName) {//remove s3 object
         DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
         amazonS3Client.deleteObject(request);
     }

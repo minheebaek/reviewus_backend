@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
@@ -33,6 +31,12 @@ public class GoogleOAuthService {
     @Value("${oauth2.google.redirect-uri}")
     private String LOGIN_REDIRECT_URI;
 
+    /**
+     * requestGoogleAccessToken
+     *
+     * @parm accessCode
+     * @return ResponseEntity<String>
+     */
     public ResponseEntity<String> requestGoogleAccessToken(String accessCode) {
 
 
@@ -53,10 +57,22 @@ public class GoogleOAuthService {
         return null;
     }
 
+    /**
+     * getGoogleAccessToken
+     *
+     * @parm accessTokenResponse
+     * @return SocialOAuthTokenDto
+     */
     public SocialOAuthTokenDto getGoogleAccessToken(ResponseEntity<String> accessTokenResponse) throws JsonProcessingException {
         return objectMapper.readValue(accessTokenResponse.getBody(),SocialOAuthTokenDto.class);
     }
 
+    /**
+     * requestUserInfo
+     *
+     * @parm socialOAuthTokenDto
+     * @return ResponseEntity<String>
+     */
     public ResponseEntity<String> requestUserInfo(SocialOAuthTokenDto socialOAuthTokenDto) {
         //header에 google의 accessToken을 담는다
         HttpHeaders headers = new HttpHeaders();
@@ -70,6 +86,12 @@ public class GoogleOAuthService {
 
     }
 
+    /**
+     * getUserInfo
+     *
+     * @parm userInfoResponse
+     * @return PostOAuthSigninRequestDto
+     */
     public PostOAuthSigninRequestDto getUserInfo(ResponseEntity<String> userInfoResponse) throws JsonProcessingException {
         return objectMapper.readValue(userInfoResponse.getBody(), PostOAuthSigninRequestDto.class);
     }
