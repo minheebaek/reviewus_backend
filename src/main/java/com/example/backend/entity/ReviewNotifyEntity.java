@@ -36,6 +36,8 @@ public class ReviewNotifyEntity {
         this.userId=userId;
         this.boardDate=localDate;
         this.boardCount=1;
+        this.readDate = LocalDate.parse("2000-01-01");
+
     }
 
     public void updateReviewNotify(ReviewNotifyEntity reviewNotifyEntity) {
